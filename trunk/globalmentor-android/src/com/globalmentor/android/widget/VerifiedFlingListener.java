@@ -97,6 +97,10 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	@Override
 	public boolean onFling(final MotionEvent e1, final MotionEvent e2, float velocityX, float velocityY)
 	{
+		if(e1 == null || e2 == null) //if one of the motion events is missing (see http://stackoverflow.com/questions/937313/android-basic-gesture-detection/5641723#5641723 )
+		{
+			return false;	//ignore the fling
+		}
 		if(!isFlingVerified(Axis.HORIZONTAL, e2.getX() - e1.getX(), velocityX)) //verify the horizontal fling
 		{
 			velocityX = 0;
