@@ -36,12 +36,12 @@ import android.view.*;
  * 
  * <p>
  * The fling response logic here was first based upon <a
- * href="http://mobile.tutsplus.com/tutorials/android/android-gesture/">http://mobile.tutsplus.com/tutorials/android/android-gesture/</a>.
+ * href="http://mobile.tutsplus.com/tutorials/android/android-gesture/">Android SDK: Introduction to Gestures</a>.
  * </p>
  * 
  * @author Garret Wilson
  * 
- * @see <a href="http://mobile.tutsplus.com/tutorials/android/android-gesture/">http://mobile.tutsplus.com/tutorials/android/android-gesture/</a>
+ * @see <a href="http://mobile.tutsplus.com/tutorials/android/android-gesture/">Android SDK: Introduction to Gestures</a>
  * @see <a href="http://www.codeshogun.com/blog/2009/04/16/how-to-implement-swipe-action-in-android/">How to implement Swipe action in Android</a>
  * @see <a href="http://stackoverflow.com/questions/937313/android-basic-gesture-detection">Android - basic gesture detection</a>
  */
