@@ -24,7 +24,7 @@ import android.view.*;
 /**
  * A gesture listener that detects flings and ensures that they fall within the system's thresholds for page fling events. That is, they check whether a fling
  * is of sufficiently high velocity and has traveled the minimum distance required for page flings. Child classes should override
- * {@link #onPageFling(MotionEvent, MotionEvent, float, float)}.
+ * {@link #onVerifiedFling(MotionEvent, MotionEvent, float, float)}.
  * 
  * @author Garret Wilson
  * 
