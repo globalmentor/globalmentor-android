@@ -16,11 +16,9 @@
 
 package com.globalmentor.android.accounts;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 import java.io.IOException;
-
-import com.google.common.base.Preconditions;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -40,6 +38,8 @@ import android.util.Log;
  */
 public class AccountAuthManager
 {
+
+	//TODO fix for dialogs	private static final int REQUEST_AUTHENTICATE = 0;
 
 	/** A handler associated with the main thread. */
 	private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -141,8 +141,17 @@ public class AccountAuthManager
 		});
 	}
 
+	/**
+	 * Interface for an operation that will be authenticated.
+	 * @author Garret Wilson
+	 */
 	public interface AuthenticatedOperation
 	{
+		/**
+		 * The main execution method. The operation should occur in this method. If the operation has authentication problems, an {@link AuthenticatorException}
+		 * should be thrown; an authentication token will be acquired and the operation will be retried.
+		 * @throws AuthenticatorException if the operation is not authenticated.
+		 */
 		public void execute() throws AuthenticatorException;
 	}
 
@@ -199,6 +208,27 @@ public class AccountAuthManager
 		}
 	}
 
+	/*TODO fix for dialogs
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		switch(requestCode)
+		{
+			case REQUEST_AUTHENTICATE:
+				if(resultCode == RESULT_OK)
+				{
+					gotAccount(false);
+				}
+				else
+				{
+					showDialog(DIALOG_ACCOUNTS);
+				}
+				break;
+		}
+	}
+	*/
+
 	private class AuthenticateTask extends AsyncTask<Void, Void, Bundle>
 	{
 
@@ -232,7 +262,7 @@ public class AccountAuthManager
 					authenticatorException.printStackTrace();
 					return null; //TODO fix
 				}
-				/*TODO fix
+				/*TODO fix for dialogs
 								catch(final AuthenticatorException authenticatorException) //if authentication failed, maybe our token is expired
 								{
 									if(getAuthToken() == null) //if we have an auth token
