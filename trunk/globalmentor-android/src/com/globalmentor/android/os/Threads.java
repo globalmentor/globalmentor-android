@@ -16,7 +16,7 @@
 
 package com.globalmentor.android.os;
 
-import android.os.Looper;
+import android.os.*;
 
 /**
  * Various utilities for working with threads in Android.
@@ -25,6 +25,9 @@ import android.os.Looper;
  */
 public class Threads
 {
+
+	/** A handler associated with the main thread. */
+	public final static Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
 
 	/** @return Whether the currently executing thread is the UI thread. */
 	public static boolean isMainThread()
@@ -43,7 +46,6 @@ public class Threads
 		{
 			throw new IllegalStateException("Code must be called from the UI thread; code was called from thread \"" + Thread.currentThread().getName() + "\".");
 		}
-
 	}
 
 }
