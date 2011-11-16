@@ -43,6 +43,10 @@ import java.util.List;
  * If there is at least one state defined, {@link #getState()} and {@link #pollState()} will never return <code>null</code>.
  * </p>
  * 
+ * <p>
+ * This class is thread-safe.
+ * </p>
+ * 
  * @param <S> The type of state being managed.
  * 
  * @author Garret Wilson
@@ -67,7 +71,7 @@ public class PollStateManager<S>
 	 * @param maxDuration The maximum duration, in milliseconds, for a transition, regardless of polls.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public void addMaxDurationState(final S state, final long maxDuration)
+	public synchronized void addMaxDurationState(final S state, final long maxDuration)
 	{
 		addState(state, maxDuration, Long.MAX_VALUE);
 	}
@@ -78,7 +82,7 @@ public class PollStateManager<S>
 	 * @param maxPollCount The maximum number of polls before a transition, regardless of duration.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public void addMaxPollCountState(final S state, final long maxPollCount)
+	public synchronized void addMaxPollCountState(final S state, final long maxPollCount)
 	{
 		addState(state, Long.MAX_VALUE, maxPollCount);
 	}
@@ -90,7 +94,7 @@ public class PollStateManager<S>
 	 * @param maxPollCount The maximum number of polls before a transition, regardless of duration.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public void addState(final S state, final long maxDuration, final long maxPollCount)
+	public synchronized void addState(final S state, final long maxDuration, final long maxPollCount)
 	{
 		addState(state, Long.MAX_VALUE, maxDuration, Long.MAX_VALUE, maxPollCount);
 	}
@@ -104,7 +108,7 @@ public class PollStateManager<S>
 	 * @param maxPollCount The maximum number of polls before a transition, regardless of duration.
 	 * @throws NullPointerException if the given state is <code>null</code>.
 	 */
-	public void addState(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount)
+	public synchronized void addState(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount)
 	{
 		stateInfos.add(new StateInfo(state, minDuration, maxDuration, minPollCount, maxPollCount));
 	}

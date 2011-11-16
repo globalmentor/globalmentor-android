@@ -36,8 +36,8 @@ import android.view.*;
  * </p>
  * 
  * <p>
- * The fling response logic here was first based upon <a
- * href="http://mobile.tutsplus.com/tutorials/android/android-gesture/">Android SDK: Introduction to Gestures</a>.
+ * The fling response logic here was first based upon <a href="http://mobile.tutsplus.com/tutorials/android/android-gesture/">Android SDK: Introduction to
+ * Gestures</a>.
  * </p>
  * 
  * @author Garret Wilson
@@ -116,7 +116,9 @@ public class ImageSlideView extends View
 
 	/**
 	 * Sets the images to be shown and selects the first one, if any.
-	 * <p>This method must be called from the UI thread.</p>
+	 * <p>
+	 * This method must be called from the UI thread.
+	 * </p>
 	 * @param images The images to be displayed.
 	 */
 	public void setImages(final List<Bitmap> images)
@@ -126,14 +128,19 @@ public class ImageSlideView extends View
 
 	/**
 	 * Sets the images to be shown and selects one of them.
-	 * <p>This method must be called from the UI thread.</p>
+	 * <p>
+	 * This method must be called from the UI thread.
+	 * </p>
 	 * @param images The images to be displayed.
 	 * @param index The index of the image to show immediately.
-	 * @throws IndexOutOfBoundsException if the given index refers to a location not in the collection
+	 * @throws IndexOutOfBoundsException if the given index refers to a location not in the collection, if the collection is non-empty.
 	 */
 	public void setImages(final List<Bitmap> images, final int index)
 	{
-		checkElementIndex(index, images.size());
+		if(!images.isEmpty())
+		{
+			checkElementIndex(index, images.size());
+		}
 		checkMainThread();
 		this.images = new ArrayList<Bitmap>(images);
 		goImage(index); //go to the indicated image, which resets the position matrixes appropriately
@@ -144,7 +151,9 @@ public class ImageSlideView extends View
 	 * <p>
 	 * All image changes should eventually call this method.
 	 * </p>
-	 * <p>This method must be called from the UI thread.</p>
+	 * <p>
+	 * This method must be called from the UI thread.
+	 * </p>
 	 * @param index The index of the image to which to change.
 	 * @see #recalculateImage()
 	 */
@@ -157,7 +166,9 @@ public class ImageSlideView extends View
 
 	/**
 	 * Changes to previous image. If there is no previous image, the last image will be shown instead.
-	 * <p>This method must be called from the UI thread.</p>
+	 * <p>
+	 * This method must be called from the UI thread.
+	 * </p>
 	 */
 	public void goPreviousImage()
 	{
@@ -166,7 +177,9 @@ public class ImageSlideView extends View
 
 	/**
 	 * Changes to next image. If there is no next image, the first image will be shown instead.
-	 * <p>This method must be called from the UI thread.</p>
+	 * <p>
+	 * This method must be called from the UI thread.
+	 * </p>
 	 */
 	public void goNextImage()
 	{
