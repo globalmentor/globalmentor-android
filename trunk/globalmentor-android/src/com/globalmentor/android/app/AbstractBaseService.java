@@ -36,4 +36,15 @@ public abstract class AbstractBaseService extends Service
 		return Applications.isDebug(this);
 	}
 
+	/**
+	 * Returns a log tag appropriate for this service.
+	 * <p>
+	 * This implementation delegates to the {@link Class#getSimpleName()} of the service class.
+	 * </p>
+	 * @return A log tag appropriate for this service.
+	 */
+	public String getLogTag()
+	{
+		return getClass().getSimpleName();
+	}
 }

@@ -122,17 +122,18 @@ public class Notifications
 	/**
 	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast.
 	 * @param context The current context, the {@link Class#getSimpleName()} of which is also used as a log tag.
-	 * @param resId The resource ID of the string resource to use.
 	 * @param throwable The source of the error, providing a stack trace, or <code>null</code> if there is no available source throwable.
+	 * @param resId The resource ID of the string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
 	 * @throws NullPointerException if the given context and/or resource ID is <code>null</code>.
 	 * @throws NotFoundException if the given ID does not exist in the resources.
 	 * @see Log#e(String, String)
 	 * @see Log#e(String, String, Throwable)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final Context context, final int resId, final Throwable throwable) throws NotFoundException
+	public static void error(final Context context, final Throwable throwable, final int resId, final Object... formatArgs) throws NotFoundException
 	{
-		error(context.getClass().getSimpleName(), context, resId, throwable);
+		error(context.getClass().getSimpleName(), context, throwable, resId, formatArgs);
 	}
 
 	/**
@@ -148,24 +149,27 @@ public class Notifications
 	 */
 	public static void error(final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
 	{
-		error(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId, formatArgs), null);
+		error(tag, context, null, resId, formatArgs);
 	}
 
 	/**
 	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast.
 	 * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
 	 * @param context The current context.
-	 * @param resId The resource ID of the string resource to use.
 	 * @param throwable The source of the error, providing a stack trace, or <code>null</code> if there is no available source throwable.
+	 * @param resId The resource ID of the string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
 	 * @throws NullPointerException if the given tag, context, and/or resource ID is <code>null</code>.
 	 * @throws NotFoundException if the given ID does not exist in the resources.
 	 * @see Log#e(String, String)
 	 * @see Log#e(String, String, Throwable)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final String tag, final Context context, final int resId, final Throwable throwable) throws NotFoundException
+	public static void error(final String tag, final Context context, final Throwable throwable, final int resId, final Object... formatArgs)
+			throws NotFoundException
 	{
-		error(tag, context, context.getResources().getString(resId), throwable);
+		error(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId, formatArgs),
+				throwable);
 	}
 
 	/**
@@ -240,7 +244,8 @@ public class Notifications
 	}
 
 	/**
-	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast.
+	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast. The {@link Throwable#getMessage()}, if
+	 * any, will be appended to the given toast message.
 	 * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
 	 * @param context The current context.
 	 * @param message The message to log.
@@ -265,6 +270,14 @@ public class Notifications
 		if(!message.isEmpty()) //add the message, if available
 		{
 			toastMessageBuilder.append(' ').append(message);
+		}
+		if(throwable != null) //add the throwable message, if available
+		{
+			final String throwableMessage = throwable.getMessage();
+			if(throwableMessage != null && !throwableMessage.isEmpty())
+			{
+				toastMessageBuilder.append(' ').append(throwableMessage);
+			}
 		}
 		runOnMainThread(new Runnable()
 		{

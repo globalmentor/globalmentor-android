@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-package com.globalmentor.android.app;
+package com.globalmentor.android.net;
 
-import android.app.Activity;
-import android.content.pm.ApplicationInfo;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import android.net.Uri;
 
 /**
- * Activity with added functionality to serve as a base for most new activities.
+ * Utilities for working with Android {@link Uri}s.
  * 
  * @author Garret Wilson
+ * 
+ * @see Uri
  */
-public class BaseActivity extends Activity
+public class Uris
 {
 
 	/**
-	 * @return Whether this application is in debug mode.
-	 * @see ApplicationInfo#FLAG_DEBUGGABLE
+	 * Creates a Java URL from an Android URI.
+	 * @param uri The URI to convert
+	 * @return The converted URL.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the given URI is not a valid URL.
 	 */
-	public boolean isDebug()
+	public static URL toURL(final Uri uri)
 	{
-		return Applications.isDebug(this);
-	}
-
-	/**
-	 * Returns a log tag appropriate for this activity.
-	 * <p>
-	 * This implementation delegates to the {@link Class#getSimpleName()} of the activity class.
-	 * </p>
-	 * @return A log tag appropriate for this activity.
-	 */
-	public String getLogTag()
-	{
-		return getClass().getSimpleName();
+		try
+		{
+			return new URL(uri.toString());
+		}
+		catch(final MalformedURLException malformedURLException)
+		{
+			throw new IllegalArgumentException(malformedURLException);
+		}
 	}
 
 }
