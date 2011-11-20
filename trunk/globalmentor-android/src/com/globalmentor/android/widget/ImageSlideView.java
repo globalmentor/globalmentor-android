@@ -142,7 +142,14 @@ public class ImageSlideView extends View
 			checkElementIndex(index, images.size());
 		}
 		checkMainThread();
-		this.images = new ArrayList<Bitmap>(images);
+		//recycle all the existing images so they can be cleaned up as soon as possible; see http://code.google.com/p/android/issues/detail?id=8488
+		final Iterator<Bitmap> imageIterator = this.images.iterator();
+		while(imageIterator.hasNext())
+		{
+			imageIterator.next().recycle(); //recycle the image
+			imageIterator.remove(); //remove the image
+		}
+		this.images = new ArrayList<Bitmap>(images); //dump the old list altogether and create a new one
 		goImage(index); //go to the indicated image, which resets the position matrixes appropriately
 	}
 
