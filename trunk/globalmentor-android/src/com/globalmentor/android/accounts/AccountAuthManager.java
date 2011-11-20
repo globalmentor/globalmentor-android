@@ -20,16 +20,9 @@ import static com.google.common.base.Preconditions.*;
 
 import java.io.IOException;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
+import android.accounts.*;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
+import android.os.*;
 
 /**
  * Manages the authentication for an account, easing the process of acquiring and refreshing authentication tokens.
@@ -39,13 +32,29 @@ import android.util.Log;
 public class AccountAuthManager
 {
 
+	/**
+	 * The default number of times to retry authentication.
+	 * <p>
+	 * By default, three tries (one try and two retries) are allowed to authenticate. This covers the following common condition:
+	 * </p>
+	 * <ol>
+	 * <li>We have no record of an auth token; a try is made and fails.</li>
+	 * <li>We get an auth token and try again, but the auth token given is a cached, expired token.</li>
+	 * <li>We invalidate the token and get a new one, trying one last time; the attempt should succeed with the new token.</li>
+	 * </ol>
+	 * 
+	 */
+	public final static int DEFAULT_AUTHENTICATE_RETRY_COUNT = 2;
+
 	//TODO fix for dialogs	private static final int REQUEST_AUTHENTICATE = 0;
 
 	/** A handler associated with the main thread. */
 	private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
+	/** The Android account manager. */
 	private final AccountManager accountManager;
 
+	/** @return The Android account manager. */
 	public AccountManager getAccountManager()
 	{
 		return accountManager;
@@ -78,6 +87,13 @@ public class AccountAuthManager
 		return authToken;
 	}
 
+	/**
+	 * Constructor.
+	 * @param accountManager The Android account manager.
+	 * @param account The account the authentication of which is being managed.
+	 * @param authTokenType The auth token type---an authenticator-dependent string token.
+	 * @throws NullPointerException if the given account manager, account, and/or auth token type is <code>null</code>.
+	 */
 	public AccountAuthManager(final AccountManager accountManager, final Account account, final String authTokenType)
 	{
 		this.accountManager = checkNotNull(accountManager);
@@ -96,7 +112,6 @@ public class AccountAuthManager
 	protected void onAuthenticated(final String authToken)
 	{
 		this.authToken = authToken;
-		//TODO store this in the client in a subclass
 	}
 
 	/**
@@ -116,9 +131,33 @@ public class AccountAuthManager
 		}
 	}
 
+	/**
+	 * Executes an authenticate operation.
+	 * <p>
+	 * Execution will occur in a separate thread. If the operation need authentication, a new authentication token will be acquired from the account manager and
+	 * the authentication will be retried up to {@value #DEFAULT_AUTHENTICATE_RETRY_COUNT} times.
+	 * @param operation The operation to execute.
+	 * @throws NullPointerException if the given operation is <code>null</code>.
+	 * @see #DEFAULT_AUTHENTICATE_RETRY_COUNT
+	 */
 	public void execute(final AuthenticatedOperation operation)
 	{
-		new Thread(new AuthenticatedRunnable(operation)).start(); //try to perform the operation again, but don't retry authentication
+		execute(operation, DEFAULT_AUTHENTICATE_RETRY_COUNT);
+	}
+
+	/**
+	 * Executes an authenticate operation.
+	 * <p>
+	 * Execution will occur in a separate thread. If the operation need authentication, a new authentication token will be acquired from the account manager and
+	 * the authentication will be retried.
+	 * @param operation The operation to execute.
+	 * @param retries The number of authentication and operation retries to re-attempt.
+	 * @throws NullPointerException if the given operation is <code>null</code>.
+	 * @throws IllegalArgumentException if the number of retries is negative.
+	 */
+	public void execute(final AuthenticatedOperation operation, final int retries)
+	{
+		new Thread(new AuthenticatedWorker(operation, retries)).start(); //try to perform the operation again, retrying authentication as requested
 	}
 
 	/**
@@ -126,19 +165,20 @@ public class AccountAuthManager
 	 * 
 	 * @param operation The operation to retry after authentication.
 	 * @param retries The number of authentication and operation retries to re-attempt.
+	 * @throws IllegalArgumentException if the number of retries is negative.
 	 */
 	protected void authenticateRetry(final AuthenticatedOperation operation, final int retries)
 	{
-		//TODO check retries>=0
+		checkArgument(retries >= 0, "Number of retries cannot be negative.");
 		//create a new authenticate task---but it must be created in the UI thread
-		mainThreadHandler.post(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				new AuthenticateTask(operation, retries).execute();
-			}
-		});
+		mainThreadHandler.post(new Runnable() //start a new authenticate task on the main thread
+				{
+					@Override
+					public void run()
+					{
+						new AuthenticateTask(operation, retries).execute();
+					}
+				});
 	}
 
 	/**
@@ -150,40 +190,52 @@ public class AccountAuthManager
 		/**
 		 * The main execution method. The operation should occur in this method. If the operation has authentication problems, an {@link AuthenticatorException}
 		 * should be thrown; an authentication token will be acquired and the operation will be retried.
+		 * <p>
+		 * This method is not guaranteed to be run on the main thread.
+		 * </p>
+		 * @throws IOException if there is an error executing the operation.
 		 * @throws AuthenticatorException if the operation is not authenticated.
 		 */
-		public void execute() throws AuthenticatorException;
+		public void execute() throws IOException, AuthenticatorException;
+
+		/**
+		 * Called after execution finishes successfully, or after execution has failed and will not be attempted further. This method is thus guaranteed to called
+		 * once after execution begins.
+		 * <p>
+		 * This method is not guaranteed to be run on the main thread.
+		 * </p>
+		 * @param exception The error that occurred during execution, or <code>null</code> if execution completed with no error.
+		 */
+		public void postExecute(final Exception exception);
+
 	}
 
 	/**
-	 * 
-	 * 
-	 * <p>
-	 * By default, three tries (this try and two retries) are allowed to authenticate. This covers the following common condition:
-	 * </p>
-	 * <ol>
-	 * <li>We have no record of an auth token; a try is made and fails.</li>
-	 * <li>We get an auth token and try again, but the auth token given is a cached, expired token.</li>
-	 * <li>We invalidate the token and get a new one, trying one last time; the attempt should succeed with the new token.</li>
-	 * </ol>
+	 * A worker that executes an operation, authenticating and retrying the operation if necessary.
 	 * 
 	 * @author Garret Wilson
 	 * 
+	 * @see AuthenticatedOperation
 	 */
-	private class AuthenticatedRunnable implements Runnable
+	private class AuthenticatedWorker implements Runnable
 	{
 
+		/** The operation to perform. */
 		private final AuthenticatedOperation operation;
+
+		/** The number of authentication and operation retries to re-attempt. */
 		private final int retries;
 
-		public AuthenticatedRunnable(final AuthenticatedOperation operation)
-		{
-			this(operation, 2); //TODO comment retries
-		}
-
-		public AuthenticatedRunnable(final AuthenticatedOperation operation, int retries)
+		/**
+		 * Constructor.
+		 * @param operation The operation to perform.
+		 * @param retries The number of authentication and operation retries to re-attempt.
+		 * @throws IllegalArgumentException if the number of retries is negative.
+		 */
+		public AuthenticatedWorker(final AuthenticatedOperation operation, int retries)
 		{
 			this.operation = checkNotNull(operation);
+			checkArgument(retries >= 0, "Number of retries cannot be negative.");
 			this.retries = retries;
 		}
 
@@ -193,6 +245,11 @@ public class AccountAuthManager
 			try
 			{
 				operation.execute(); //try to execute the operation
+				operation.postExecute(null); //call the post-operation functionality
+			}
+			catch(final IOException ioException)
+			{
+				operation.postExecute(ioException); //call the post-operation functionality
 			}
 			catch(final AuthenticatorException authenticatorException) //if the operation needs authentication
 			{
@@ -203,6 +260,11 @@ public class AccountAuthManager
 				if(retries > 0) //if we're allowed to retry
 				{
 					authenticateRetry(operation, retries - 1); //try to perform authentication and, if successful, retry the operation if allowed, noting that now one less retry is allowed
+				}
+				else
+				//if we're finished trying
+				{
+					operation.postExecute(authenticatorException); //call the post-operation functionality
 				}
 			}
 		}
@@ -229,38 +291,56 @@ public class AccountAuthManager
 	}
 	*/
 
+	/**
+	 * The task that attempts authentication and then retries an operation.
+	 * <p>
+	 * If authentication does not succeed, the operation will not be retried, but {@link AuthenticatedOperation#postExecute(Exception)} will be called.
+	 * </p>
+	 * @author Garret Wilson
+	 */
 	private class AuthenticateTask extends AsyncTask<Void, Void, Bundle>
 	{
 
 		/** The operation to perform after successfully authenticating. */
 		private final AuthenticatedOperation postAuthenticateOperation;
 
+		/** The number of authentication and operation retries to re-attempt (after this one). */
 		private int retries;
 
+		/** The exception, if any, that occurred during authentication. */
+		private Exception exception = null;
+
+		/**
+		 * Constructor.
+		 * @param postAuthenticateOperation The operation to perform after successfully authenticating.
+		 * @param retries The number of authentication and operation retries to re-attempt (after this one).
+		 * @throws IllegalArgumentException if the number of retries is negative.
+		 */
 		public AuthenticateTask(final AuthenticatedOperation postAuthenticateOperation, final int retries)
 		{
 			this.postAuthenticateOperation = checkNotNull(postAuthenticateOperation);
-			this.retries = retries; //TODO check to make sure retries >=0
+			checkArgument(retries >= 0, "Number of retries cannot be negative.");
+			this.retries = retries;
 		}
 
 		@Override
-		protected Bundle doInBackground(Void... params)
+		protected Bundle doInBackground(final Void... params)
 		{
-			while(true) //TODO add support for retries on I/O failure
+			while(true)
 			{
 				try
 				{
-					return getAccountManager().getAuthToken(getAccount(), getAuthTokenType(), true, null, null).getResult();
+					return getAccountManager().getAuthToken(getAccount(), getAuthTokenType(), true, null, null).getResult(); //try to get a new authentication token
 				}
-				catch(OperationCanceledException e)
+				catch(final OperationCanceledException operationCanceledException) //if the user, for example, canceled authentication
 				{
-					e.printStackTrace();
-					return null; //TODO fix
+					exception = operationCanceledException;
+					return null;
 				}
-				catch(final AuthenticatorException authenticatorException) //if authentication failed, maybe our token is expired
+				catch(final AuthenticatorException authenticatorException)
 				{
-					authenticatorException.printStackTrace();
-					return null; //TODO fix
+					exception = authenticatorException;
+					return null;
 				}
 				/*TODO fix for dialogs
 								catch(final AuthenticatorException authenticatorException) //if authentication failed, maybe our token is expired
@@ -277,11 +357,10 @@ public class AccountAuthManager
 									}
 								}
 				*/
-				catch(IOException e)
+				catch(final IOException ioException)
 				{
-					Log.e("AccountAuthManager", "I/O error getting auth token", e);
-					e.printStackTrace();
-					return null; //TODO fix
+					exception = ioException;
+					return null;
 				}
 			}
 		}
@@ -290,7 +369,7 @@ public class AccountAuthManager
 		protected void onPostExecute(final Bundle result)
 		{
 			super.onPostExecute(result);
-			if(result != null) //if we have a result (i.e. there was no error
+			if(result != null) //if we have a result (i.e. there was no error)
 			{
 				if(result.containsKey(AccountManager.KEY_INTENT))
 				{
@@ -304,12 +383,12 @@ public class AccountAuthManager
 				{
 					onAuthenticated(result.getString(AccountManager.KEY_AUTHTOKEN)); //process and store the auth token
 				}
-				new Thread(new AuthenticatedRunnable(postAuthenticateOperation, retries)).start(); //try to perform the operation again, specifying the number of further retires allowed
+				new Thread(new AuthenticatedWorker(postAuthenticateOperation, retries)).start(); //try to perform the operation again, specifying the number of further retries allowed
 			}
 			else
 			//if the task ran into an error
 			{
-				//TODO handle error here
+				postAuthenticateOperation.postExecute(exception); //call the post-execution method of the operation, indicating the error
 			}
 		}
 	}

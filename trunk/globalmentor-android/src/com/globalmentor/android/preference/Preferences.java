@@ -16,12 +16,14 @@
 
 package com.globalmentor.android.preference;
 
+import static com.globalmentor.android.os.Threads.*;
 import static java.util.Collections.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
-import android.content.SharedPreferences;
+import android.content.*;
+import android.preference.PreferenceManager;
 
 /**
  * Utilities for working with Android preferences.
@@ -35,6 +37,44 @@ public class Preferences
 
 	/** The pattern for splitting a string into lines, accepting either <code>LF</code> or <code>CR+LF</code>. */
 	public final static Pattern LINE_SPLIT_PATTERN = Pattern.compile("\\r?\\n");
+
+	/**
+	 * Set the default preference values from the indicated preferences resource, but only if they haven't yet been set before.
+	 * <p>
+	 * This method starts the operation in a separate thread to avoid file accesses on the main thread.
+	 * </p>
+	 * @param context The current context.
+	 * @param resId The resource ID of the preference hierarchy XML file.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 * @see PreferenceManager#setDefaultValues(Context, int, boolean)
+	 */
+	public static void initializeDefaultValues(final Context context, final int resId)
+	{
+		initializeDefaultValues(context, resId, false); //load default preference values, but only if needed
+	}
+
+	/**
+	 * Set the default preference values from the indicated preferences resource.
+	 * <p>
+	 * This method starts the operation in a separate thread to avoid file accesses on the main thread.
+	 * </p>
+	 * @param context The current context.
+	 * @param resId The resource ID of the preference hierarchy XML file.
+	 * @param readAgain Whether to re-read the default values.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 * @see PreferenceManager#setDefaultValues(Context, int, boolean)
+	 */
+	public static void initializeDefaultValues(final Context context, final int resId, final boolean readAgain)
+	{
+		runOffMainThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				PreferenceManager.setDefaultValues(context, resId, readAgain);
+			}
+		});
+	}
 
 	/**
 	 * Returns a string preference value as a list of line, splitting the value on newlines.

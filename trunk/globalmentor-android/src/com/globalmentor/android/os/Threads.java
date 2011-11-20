@@ -48,4 +48,42 @@ public class Threads
 		}
 	}
 
+	/**
+	 * Ensures that the given runnable is run on the main thread. If the current thread is the main thread, the runnable is run immediately. Otherwise, it is run
+	 * some time in the future on the main thread.
+	 * @param runnable The runnable to run on the main thread.
+	 * @throws NullPointerException if the given runnable is <code>null</code>.
+	 */
+	public static void runOnMainThread(final Runnable runnable)
+	{
+		if(isMainThread()) //if we're already on the main thread
+		{
+			runnable.run(); //run the runnable now
+		}
+		else
+		//if we're not on the main thread
+		{
+			MAIN_THREAD_HANDLER.post(runnable); //run the runnable on the main thread later
+		}
+	}
+
+	/**
+	 * Ensures that the given runnable is run on some thread besides the main thread. If the current thread is the main thread, a separate thread is created and
+	 * started with the runnable. Otherwise, the runnable is run immediately.
+	 * @param runnable The runnable to run off the main thread.
+	 * @throws NullPointerException if the given runnable is <code>null</code>.
+	 */
+	public static void runOffMainThread(final Runnable runnable)
+	{
+		if(isMainThread()) //if we're already on the main thread
+		{
+			new Thread(runnable).start(); //start a new thread to run the runnable
+		}
+		else
+		//if we're not on the main thread
+		{
+			runnable.run(); //run the runnable now
+		}
+	}
+
 }
