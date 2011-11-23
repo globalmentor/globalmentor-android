@@ -18,8 +18,7 @@ package com.globalmentor.model;
 
 import static com.google.common.base.Preconditions.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Manages a sequence of several states, allowing a consumer to poll for states, with state transitions occurring when needed. For example, this manager may
@@ -52,7 +51,7 @@ import java.util.List;
  * @author Garret Wilson
  * 
  */
-public class PollStateManager<S>
+public class PollStateManager<S> //TODO move to general utility class
 {
 	/** The ordered list of states and corresponding info. */
 	private final List<StateInfo> stateInfos = new ArrayList<StateInfo>();
@@ -120,13 +119,45 @@ public class PollStateManager<S>
 	}
 
 	/**
+	 * Determines whether there exists states after the current state, if any.
+	 * @return <code>true</code> if there exists states after the current state, if any, or <code>false</code> if there are no further states or no states are
+	 *         defined.
+	 */
+	public synchronized boolean hasNextState()
+	{
+		return stateInfoIndex < stateInfos.size() - 1;
+	}
+
+	/**
+	 * Determines the amount of time the current state has been in effect. This method does not transition the state, so the returned duration may be longer than
+	 * the maximum duration for the current state.
+	 * @return The amount of time, in milliseconds, the current state has been in effect, or -1 if no states are defined.
+	 */
+	public synchronized long getStateDuration()
+	{
+		final StateInfo stateInfo = getStateInfo();
+		return stateInfo != null ? stateInfo.getDuration() : -1;
+	}
+
+	/**
+	 * Determines the amount of time the current state has remaining to be in effect before its maximum duration. This value may be negative if the state has been
+	 * in effect longer than its maximum allowed.
+	 * @return The amount of time, in milliseconds, the current state has remaining to be in effect, or {@link Long#MAX_VALUE} if no states are defined.
+	 */
+	public long getStateRemainingDuration()
+	{
+		final StateInfo stateInfo = getStateInfo();
+		return stateInfo != null ? stateInfo.getRemainingDuration() : Long.MAX_VALUE;
+	}
+
+	/**
 	 * Retrieves the current state. The current poll count is not affected, but if sufficient time has passed the state may first transition because of duration.
 	 * @return The current state, or <code>null</code> if no states are defined.
 	 */
 	public synchronized S getState()
 	{
 		StateInfo stateInfo = getStateInfo();
-		while(stateInfo != null && stateInfo.isTransition()) //if we should transition states
+		while(stateInfo != null && isTransitionReady()) //if we should transition states
 		{
 			stateInfo = transition(); //transition the state
 		}
@@ -143,12 +174,20 @@ public class PollStateManager<S>
 		if(stateInfo != null)
 		{
 			stateInfo.poll(); //poll the state
-			while(stateInfo.isTransition()) //if we should transition states
-			{
-				stateInfo = transition(); //transition the state
-			}
 		}
-		return stateInfo != null ? stateInfo.getState() : null;
+		return getState();
+	}
+
+	/**
+	 * Determines if a transition should occur based upon the current duration and poll count of the current state. Specifically, transition should occur if
+	 * either the duration or the poll count is above the current maximum, or both are above their minimums.
+	 * @return <code>true</code> if this state should transition, or <code>null</code> if there are no states or the current state is the last state.
+	 * @see #hasNextState()
+	 */
+	public synchronized boolean isTransitionReady()
+	{
+		final StateInfo stateInfo = getStateInfo();
+		return stateInfo != null && hasNextState() && stateInfo.isTransitionReady();
 	}
 
 	/**
@@ -272,11 +311,31 @@ public class PollStateManager<S>
 		}
 
 		/**
+		 * Determines the amount of time the current state has been in effect.
+		 * @return The amount of time, in milliseconds, the current state has been in effect.
+		 */
+		public long getDuration()
+		{
+			return System.currentTimeMillis() - startTime;
+		}
+
+		/**
+		 * Determines the amount of time the current state has remaining to be in effect before its maximum duration. This value may be negative if the state has
+		 * been in effect longer than its maximum allowed.
+		 * @return The amount of time, in milliseconds, the current state has remaining to be in effect.
+		 * @see #getMaxDuration()
+		 */
+		public long getRemainingDuration()
+		{
+			return getMaxDuration() - getDuration();
+		}
+
+		/**
 		 * Determines if a transition should occur based upon the current duration and poll count. Specifically, transition should occur if either the duration or
 		 * the poll count is above the current maximum, or both are above their minimums.
 		 * @return <code>true</code> if this state should transition.
 		 */
-		public boolean isTransition()
+		public boolean isTransitionReady()
 		{
 			final long duration = System.currentTimeMillis() - startTime;
 			return duration > getMaxDuration() || pollCount > getMaxPollCount() || (duration > getMinDuration() && pollCount > getMinPollCount());
