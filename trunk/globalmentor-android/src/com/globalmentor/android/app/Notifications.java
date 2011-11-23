@@ -54,6 +54,23 @@ public class Notifications
 	}
 
 	/**
+	 * Logs and notifies the user of information using a {@link Toast#LENGTH_SHORT} toast. The tag is not included in the toast. The string is retrieved from a
+	 * quantity resource using the provided quantity.
+	 * @param quantity The number used to get the correct string for the current language's plural rules.
+	 * @param context The current context, the {@link Class#getSimpleName()} of which is also used as a log tag.
+	 * @param resId The resource ID of the string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
+	 * @throws NullPointerException if the given context and/or resource ID is <code>null</code>.
+	 * @throws NotFoundException if the given ID does not exist in the resources.
+	 * @see Log#e(String, String)
+	 * @see Toast#makeText(Context, CharSequence, int)
+	 */
+	public static void info(final int quantity, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
+	{
+		info(quantity, context.getClass().getSimpleName(), context, resId, formatArgs);
+	}
+
+	/**
 	 * Logs and notifies the user of information using a {@link Toast#LENGTH_SHORT} toast. The tag not is included in the toast.
 	 * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
 	 * @param context The current context.
@@ -66,7 +83,26 @@ public class Notifications
 	 */
 	public static void info(final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
 	{
-		info(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId, formatArgs));
+		info(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId));
+	}
+
+	/**
+	 * Logs and notifies the user of information using a {@link Toast#LENGTH_SHORT} toast. The tag not is included in the toast. The string is retrieved from a
+	 * quantity resource using the provided quantity.
+	 * @param quantity The number used to get the correct string for the current language's plural rules.
+	 * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+	 * @param context The current context.
+	 * @param resId The resource ID of the string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
+	 * @throws NullPointerException if the given tag, context, and/or resource ID is <code>null</code>.
+	 * @throws NotFoundException if the given ID does not exist in the resources.
+	 * @see Log#e(String, String)
+	 * @see Toast#makeText(Context, CharSequence, int)
+	 */
+	public static void info(final int quantity, final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
+	{
+		info(tag, context, formatArgs.length > 0 ? context.getResources().getQuantityString(resId, quantity, formatArgs) : context.getResources()
+				.getQuantityString(resId, quantity));
 	}
 
 	/**
@@ -99,7 +135,7 @@ public class Notifications
 			@Override
 			public void run()
 			{
-				Toast.makeText(context, message, Toast.LENGTH_LONG); //show the message in a toast on the main thread
+				Toast.makeText(context, message, Toast.LENGTH_SHORT).show(); //show the message in a toast on the main thread
 			}
 		});
 	}
@@ -120,6 +156,23 @@ public class Notifications
 	}
 
 	/**
+	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast. The string is retrieved from a quantity
+	 * resource using the provided quantity.
+	 * @param quantity The number used to get the correct string for the current language's plural rules.
+	 * @param context The current context, the {@link Class#getSimpleName()} of which is also used as a log tag.
+	 * @param resId The resource ID of the string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
+	 * @throws NullPointerException if the given context and/or resource ID is <code>null</code>.
+	 * @throws NotFoundException if the given ID does not exist in the resources.
+	 * @see Log#e(String, String)
+	 * @see Toast#makeText(Context, CharSequence, int)
+	 */
+	public static void error(final int quantity, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
+	{
+		error(quantity, context.getClass().getSimpleName(), context, resId, formatArgs);
+	}
+
+	/**
 	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast.
 	 * @param context The current context, the {@link Class#getSimpleName()} of which is also used as a log tag.
 	 * @param throwable The source of the error, providing a stack trace, or <code>null</code> if there is no available source throwable.
@@ -134,6 +187,26 @@ public class Notifications
 	public static void error(final Context context, final Throwable throwable, final int resId, final Object... formatArgs) throws NotFoundException
 	{
 		error(context.getClass().getSimpleName(), context, throwable, resId, formatArgs);
+	}
+
+	/**
+	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast. The string is retrieved from a quantity
+	 * resource using the provided quantity.
+	 * @param quantity The number used to get the correct string for the current language's plural rules.
+	 * @param context The current context, the {@link Class#getSimpleName()} of which is also used as a log tag.
+	 * @param throwable The source of the error, providing a stack trace, or <code>null</code> if there is no available source throwable.
+	 * @param resId The resource ID of the string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
+	 * @throws NullPointerException if the given context and/or resource ID is <code>null</code>.
+	 * @throws NotFoundException if the given ID does not exist in the resources.
+	 * @see Log#e(String, String)
+	 * @see Log#e(String, String, Throwable)
+	 * @see Toast#makeText(Context, CharSequence, int)
+	 */
+	public static void error(final int quantity, final Context context, final Throwable throwable, final int resId, final Object... formatArgs)
+			throws NotFoundException
+	{
+		error(quantity, context.getClass().getSimpleName(), context, throwable, resId, formatArgs);
 	}
 
 	/**
@@ -153,6 +226,24 @@ public class Notifications
 	}
 
 	/**
+	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast. The string is retrieved from a quantity
+	 * resource using the provided quantity.
+	 * @param quantity The number used to get the correct string for the current language's plural rules.
+	 * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+	 * @param context The current context.
+	 * @param resId The resource ID of the string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
+	 * @throws NullPointerException if the given tag, context, and/or resource ID is <code>null</code>.
+	 * @throws NotFoundException if the given ID does not exist in the resources.
+	 * @see Log#e(String, String)
+	 * @see Toast#makeText(Context, CharSequence, int)
+	 */
+	public static void error(final int quantity, final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
+	{
+		error(quantity, tag, context, null, resId, formatArgs);
+	}
+
+	/**
 	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast.
 	 * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
 	 * @param context The current context.
@@ -168,8 +259,29 @@ public class Notifications
 	public static void error(final String tag, final Context context, final Throwable throwable, final int resId, final Object... formatArgs)
 			throws NotFoundException
 	{
-		error(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId, formatArgs),
-				throwable);
+		error(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId), throwable);
+	}
+
+	/**
+	 * Logs and notifies the user of an error using a {@link Toast#LENGTH_LONG} toast. The tag is included in the toast. The string is retrieved from a quantity
+	 * resource using the provided quantity.
+	 * @param quantity The number used to get the correct string for the current language's plural rules.
+	 * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+	 * @param context The current context.
+	 * @param throwable The source of the error, providing a stack trace, or <code>null</code> if there is no available source throwable.
+	 * @param resId The resource ID of the quantity string resource to use.
+	 * @param formatArgs The format arguments that will be used for substitution, if any.
+	 * @throws NullPointerException if the given tag, context, and/or resource ID is <code>null</code>.
+	 * @throws NotFoundException if the given ID does not exist in the resources.
+	 * @see Log#e(String, String)
+	 * @see Log#e(String, String, Throwable)
+	 * @see Toast#makeText(Context, CharSequence, int)
+	 */
+	public static void error(final int quantity, final String tag, final Context context, final Throwable throwable, final int resId, final Object... formatArgs)
+			throws NotFoundException
+	{
+		error(tag, context, formatArgs.length > 0 ? context.getResources().getQuantityString(resId, quantity, formatArgs) : context.getResources()
+				.getQuantityString(resId, quantity), throwable);
 	}
 
 	/**
@@ -284,7 +396,7 @@ public class Notifications
 			@Override
 			public void run()
 			{
-				Toast.makeText(context, toastMessageBuilder, Toast.LENGTH_LONG); //show the message in a toast on the main thread
+				Toast.makeText(context, toastMessageBuilder, Toast.LENGTH_LONG).show(); //show the message in a toast on the main thread
 			}
 		});
 	}
