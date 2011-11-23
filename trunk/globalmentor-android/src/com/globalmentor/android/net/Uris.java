@@ -16,8 +16,8 @@
 
 package com.globalmentor.android.net;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
+import java.net.*;
 
 import android.net.Uri;
 
@@ -32,9 +32,21 @@ public class Uris
 {
 
 	/**
+	 * Creates a Java file from an Android URI.
+	 * @param uri The URI to convert.
+	 * @return The URI converted to a file.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the given URI is not a valid file URI.
+	 */
+	public static File toFile(final Uri uri)
+	{
+		return new File(URI.create(uri.toString()));
+	}
+
+	/**
 	 * Creates a Java URL from an Android URI.
-	 * @param uri The URI to convert
-	 * @return The converted URL.
+	 * @param uri The URI to convert.
+	 * @return The Android URI converted to a file.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI is not a valid URL.
 	 */

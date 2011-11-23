@@ -18,7 +18,6 @@ package com.globalmentor.android.widget;
 
 import static com.globalmentor.android.os.Threads.*;
 import static com.google.common.base.Preconditions.*;
-import static java.util.Collections.*;
 
 import java.util.*;
 
@@ -33,6 +32,10 @@ import android.view.*;
  * <p>
  * This view is light-weight and concentrates on UI-specific functionality such as flings and convenience transition methods. More complex business logic such
  * as image loading and automatic transitions should be performed by consumers of this view.
+ * </p>
+ * 
+ * <p>
+ * This view does not support multiple instances of the same image bitmap object.
  * </p>
  * 
  * <p>
@@ -87,41 +90,67 @@ public class ImageSlideView extends View
 	 */
 	private Matrix scrollMatrix = new Matrix();
 
-	/** The list of images to be displayed; this list will be completely replaced when new images are provided. */
-	private List<Bitmap> images = emptyList();
+	/**
+	 * The list of images to be displayed, associated with their arbitrary identifiers. This entire map may be replaced from time to time. All access must occur
+	 * from the main thread.
+	 */
+	private Map<String, Bitmap> images = new HashMap<String, Bitmap>();
+
+	/** The list of image IDs to be displayed. This entire list may be replaced from time to time. All access must occur from the main thread. */
+	private List<String> imageOrder = new ArrayList<String>();
 
 	/**
-	 * The index of the image being displayed in the images list. Because of race conditions, this variable may not always indicate a valid index in the images
-	 * list. Rather than synchronizing access to related variables, code using this index should compensate for invalid indexes by choosing another image (or
-	 * none) as appropriate.
+	 * The index of the image being displayed in the image order list.
+	 * @see #imageOrder
 	 */
 	private int imageIndex = -1;
 
-	/** @return The image currently being displayed, or <code>null</code> if no image is being displayed. */
+	/**
+	 * Returns the image currently being displayed.
+	 * <p>
+	 * This method must be called from the main thread.
+	 * </p>
+	 * @return The image currently being displayed, or <code>null</code> if no image is being displayed.
+	 */
 	public Bitmap getImage()
 	{
-		final List<Bitmap> images = this.images; //get a reference to the list to prevent race conditions
-		int imageIndex = this.imageIndex; //get a copy of the image index because we may choose another image
-		final int imageCount = images.size(); //find out how many images there are
-		if(imageCount == 0) //if there are no images
+		checkMainThread();
+		if(images.isEmpty()) //if there are no images
 		{
-			return null; //no image can be selected
+			return null;
 		}
-		if(imageIndex < 0 || imageIndex >= imageCount) //if an invalid index is indicated
+		return images.get(imageOrder.get(imageIndex)); //get the ID of the selected image and return the bitmap for that image
+	}
+
+	/**
+	 * Removes all images in the view. This method recycles and releases images so that they can be reclaimed more quickly.
+	 * <p>
+	 * This method must be called from the main thread.
+	 * </p>
+	 * @see Bitmap#recycle()
+	 */
+	public void clearImages()
+	{
+		checkMainThread();
+		//recycle all the existing images so they can be cleaned up as soon as possible; see http://code.google.com/p/android/issues/detail?id=8488
+		final Iterator<Map.Entry<String, Bitmap>> idImageIterator = images.entrySet().iterator();
+		while(idImageIterator.hasNext())
 		{
-			imageIndex = 0; //assume the first image
+			idImageIterator.next().getValue().recycle(); //recycle the image
+			idImageIterator.remove(); //remove the image entry from the map
 		}
-		return images.get(imageIndex); //return the selected image
+		this.images = new HashMap<String, Bitmap>(); //dump the old map altogether and create a new one
+		this.imageOrder = new ArrayList<String>(); //dump the old list altogether and create a new one
 	}
 
 	/**
 	 * Sets the images to be shown and selects the first one, if any.
 	 * <p>
-	 * This method must be called from the UI thread.
+	 * This method must be called from the main thread.
 	 * </p>
-	 * @param images The images to be displayed.
+	 * @param images The images to be displayed, along with their IDs.
 	 */
-	public void setImages(final List<Bitmap> images)
+	public void setImages(final Map<String, Bitmap> images)
 	{
 		setImages(images, 0);
 	}
@@ -129,68 +158,159 @@ public class ImageSlideView extends View
 	/**
 	 * Sets the images to be shown and selects one of them.
 	 * <p>
-	 * This method must be called from the UI thread.
+	 * This method must be called from the main thread.
 	 * </p>
-	 * @param images The images to be displayed.
+	 * @param images The images to be displayed, along with their IDs.
 	 * @param index The index of the image to show immediately.
+	 * @throws NullPointerException if a given image ID and/or image is <code>null</code>.
+	 * @throws IllegalArgumentException if an image with one of the given IDs already exists.
 	 * @throws IndexOutOfBoundsException if the given index refers to a location not in the collection, if the collection is non-empty.
 	 */
-	public void setImages(final List<Bitmap> images, final int index)
+	public void setImages(final Map<String, Bitmap> images, final int index)
 	{
 		if(!images.isEmpty())
 		{
 			checkElementIndex(index, images.size());
 		}
 		checkMainThread();
-		//recycle all the existing images so they can be cleaned up as soon as possible; see http://code.google.com/p/android/issues/detail?id=8488
-		final Iterator<Bitmap> imageIterator = this.images.iterator();
-		while(imageIterator.hasNext())
-		{
-			imageIterator.next().recycle(); //recycle the image
-			imageIterator.remove(); //remove the image
-		}
-		this.images = new ArrayList<Bitmap>(images); //dump the old list altogether and create a new one
-		goImage(index); //go to the indicated image, which resets the position matrixes appropriately
+		clearImages(); //remove existing images so they can be garbage collected more quickly
+		addImages(images); //add the given images
 	}
 
 	/**
-	 * Changes to the image at the given index. Sizes and positions are reset to match the indicated image.
+	 * Adds the given images to the view. The currently selected image will not be changed.
+	 * <p>
+	 * This method must be called from the main thread.
+	 * </p>
+	 * @param images The images to be added, along with their IDs.
+	 * @param index The index of the image to show immediately.
+	 * @throws NullPointerException if a given image ID and/or image is <code>null</code>.
+	 * @throws IllegalArgumentException if an image with one of the given IDs already exists.
+	 */
+	public void addImages(final Map<String, Bitmap> images)
+	{
+		checkMainThread();
+		for(final Map.Entry<String, Bitmap> imageEntry : images.entrySet()) //add the images individually
+		{
+			addImage(imageEntry.getKey(), imageEntry.getValue());
+		}
+	}
+
+	/**
+	 * Adds an image to the view. The currently selected image will not be changed.
+	 * <p>
+	 * This method must be called from the main thread.
+	 * </p>
+	 * @param imageID The ID of the new image.
+	 * @param image The image to add.
+	 * @throws NullPointerException if the given image ID and/or image is <code>null</code>.
+	 * @throws IllegalArgumentException if an image with the given ID already exists.
+	 */
+	public void addImage(final String imageID, final Bitmap image)
+	{
+		checkMainThread();
+		if(images.containsKey(checkNotNull(imageID)))
+		{
+			throw new IllegalArgumentException("Image with ID " + imageID + " already exists.");
+		}
+		images.put(imageID, checkNotNull(image));
+		imageOrder.add(imageID);
+	}
+
+	/**
+	 * Removes an image from the view. The currently selected image will only be changed if the image being removed is the one being viewed. This method recycles
+	 * and releases the image so that it can be reclaimed more quickly. If no image with the given ID exists, no action occurs.
+	 * <p>
+	 * This method must be called from the main thread.
+	 * </p>
+	 * @param imageID The ID of the image to remove.
+	 * @throws NullPointerException if the given image ID is <code>null</code>.
+	 */
+	public void removeImage(final String imageID)
+	{
+		checkMainThread();
+		final Bitmap bitmap = images.remove(imageID); //remove the image and get the bitmap for it
+		if(bitmap != null) //if we knew about the image
+		{
+			bitmap.recycle(); //recycle the image; see http://code.google.com/p/android/issues/detail?id=8488
+			imageOrder.remove(imageID); //remove the image from the order list
+			if(imageIndex > imageOrder.size() - 1) //if our image index is now invalid
+			{
+				imageIndex = imageOrder.isEmpty() ? 0 : imageOrder.size() - 1; //we'll show the last image (unless there are no images)
+				invalidate(); //because we changed the image index, invalidate the view
+			}
+		}
+	}
+
+	/**
+	 * Changes to the image at the given index. Sizes and positions are reset to match the indicated image. If there are no images, the index must be zero.
 	 * <p>
 	 * All image changes should eventually call this method.
 	 * </p>
 	 * <p>
-	 * This method must be called from the UI thread.
+	 * This method must be called from the main thread.
 	 * </p>
-	 * @param index The index of the image to which to change.
+	 * @param imageIndex The index of the image to which to change.
+	 * @throws IndexOutOfBoundsException if the given index refers to a location not in the collection, if the collection is non-empty.
 	 * @see #recalculateImage()
 	 */
-	public void goImage(final int index)
+	public void goImage(final int imageIndex)
 	{
 		checkMainThread();
-		this.imageIndex = index; //change the index
+		if(images.isEmpty())
+		{
+			checkArgument(imageIndex == 0); //if there are no images, only allow the first index
+		}
+		else
+		//if there are images
+		{
+			checkElementIndex(imageIndex, images.size());
+		}
+		this.imageIndex = imageIndex; //change the index
 		recalculateImage(); //recalculate the image size and position
+	}
+
+	/**
+	 * Changes to the image with the given ID. Sizes and positions are reset to match the indicated image. If there is no image with the given ID, no action is
+	 * taken.
+	 * <p>
+	 * This method must be called from the main thread.
+	 * </p>
+	 * @param imageID The ID of the image to show.
+	 * @return The index of the image, or -1 if there is no image with the given ID.
+	 * @throws NullPointerException if the given image ID is <code>null</code>.
+	 */
+	public int goImage(final String imageID)
+	{
+		checkMainThread();
+		final int imageIndex = imageOrder.indexOf(checkNotNull(imageID));
+		if(imageIndex >= 0) //if there is such an image ID
+		{
+			goImage(imageIndex); //go to that index
+		}
+		return imageIndex; //return the index of the image (if any)
 	}
 
 	/**
 	 * Changes to previous image. If there is no previous image, the last image will be shown instead.
 	 * <p>
-	 * This method must be called from the UI thread.
+	 * This method must be called from the main thread.
 	 * </p>
 	 */
 	public void goPreviousImage()
 	{
-		goImage(imageIndex > 0 ? imageIndex - 1 : images.size() - 1); //go to the previous image, wrapping around if needed
+		goImage(imageIndex > 0 ? imageIndex - 1 : imageOrder.size() - 1); //go to the previous image, wrapping around if needed
 	}
 
 	/**
 	 * Changes to next image. If there is no next image, the first image will be shown instead.
 	 * <p>
-	 * This method must be called from the UI thread.
+	 * This method must be called from the main thread.
 	 * </p>
 	 */
 	public void goNextImage()
 	{
-		goImage(imageIndex < images.size() - 1 ? imageIndex + 1 : 0); //go to the next image, wrapping around if needed
+		goImage(imageIndex < imageOrder.size() - 1 ? imageIndex + 1 : 0); //go to the next image, wrapping around if needed
 	}
 
 	/**
