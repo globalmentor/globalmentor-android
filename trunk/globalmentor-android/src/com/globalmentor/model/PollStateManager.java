@@ -115,7 +115,7 @@ public class PollStateManager<S> //TODO move to general utility class
 	/** @return Info for the current state, or <code>null</code> if no states are defined. */
 	protected synchronized StateInfo getStateInfo()
 	{
-		return stateInfoIndex < stateInfos.size() ? stateInfos.get(0) : null;
+		return !stateInfos.isEmpty() ? stateInfos.get(stateInfoIndex) : null;
 	}
 
 	/**
