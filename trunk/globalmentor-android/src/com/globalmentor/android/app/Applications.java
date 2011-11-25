@@ -16,8 +16,9 @@
 
 package com.globalmentor.android.app;
 
-import android.content.Context;
+import android.content.*;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 /**
  * Utilities for working with Android applications.
@@ -36,6 +37,36 @@ public class Applications
 	public static boolean isDebug(final Context context)
 	{
 		return (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+	}
+
+	/**
+	 * Launches an application.
+	 * @param context The current context.
+	 * @param applicationInfo A description of the application.
+	 * @throws NullPointerException if the given context and/or application info is <code>null</code>.
+	 * @throws NameNotFoundException if the given package name is not recognized.
+	 * @throws ActivityNotFoundException if no activity could be found for the given package.
+	 */
+	public static void launch(final Context context, final ApplicationInfo applicationInfo)
+	{
+		launch(context, applicationInfo.packageName);
+	}
+
+	/**
+	 * Launches an application.
+	 * @param context The current context.
+	 * @param packageName The name of the package to launch.
+	 * @throws NullPointerException if the given context and/or package name.
+	 * @throws NameNotFoundException if the given package name is not recognized.
+	 * @throws ActivityNotFoundException if no activity could be found for the given package.
+	 */
+	public static void launch(final Context context, final String packageName)
+	{
+		final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+		if(launchIntent != null) //if there is a launch intent for this package
+		{
+			context.startActivity(launchIntent); //start the activity from the launch intent
+		}
 	}
 
 }
