@@ -65,21 +65,25 @@ public class ApplicationInfoAdapter extends BaseAdapter
 		this.list = checkNotNull(list);
 	}
 
+	@Override
 	public int getCount()
 	{
 		return list.size();
 	}
 
+	@Override
 	public Object getItem(int position)
 	{
 		return list.get(position);
 	}
 
+	@Override
 	public long getItemId(int position)
 	{
 		return position;
 	}
 
+	@Override
 	public View getView(final int position, final View convertView, final ViewGroup parent)
 	{
 		final ApplicationInfo applicationInfo = list.get(position);

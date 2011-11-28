@@ -173,6 +173,7 @@ public class AccountAuthManager
 		//create a new authenticate task---but it must be created in the UI thread
 		mainThreadHandler.post(new Runnable() //start a new authenticate task on the main thread
 				{
+					@Override
 					public void run()
 					{
 						new AuthenticateTask(operation, retries).execute();
@@ -238,6 +239,7 @@ public class AccountAuthManager
 			this.retries = retries;
 		}
 
+		@Override
 		public void run()
 		{
 			try
