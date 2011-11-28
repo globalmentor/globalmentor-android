@@ -132,7 +132,6 @@ public class Notifications
 		Log.i(tag, message); //log the message
 		runOnMainThread(new Runnable()
 		{
-			@Override
 			public void run()
 			{
 				Toast.makeText(context, message, Toast.LENGTH_SHORT).show(); //show the message in a toast on the main thread
@@ -393,7 +392,6 @@ public class Notifications
 		}
 		runOnMainThread(new Runnable()
 		{
-			@Override
 			public void run()
 			{
 				Toast.makeText(context, toastMessageBuilder, Toast.LENGTH_LONG).show(); //show the message in a toast on the main thread

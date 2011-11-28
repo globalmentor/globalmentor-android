@@ -434,7 +434,6 @@ public class ImageSlideView extends View
 		}
 		post(new Runnable() //post an event to start sliding
 		{
-			@Override
 			public void run()
 			{
 				slideAnimateStep(System.currentTimeMillis(), startMatrix, startX, startY, endX, endY, velocityX, velocityY);
@@ -468,7 +467,6 @@ public class ImageSlideView extends View
 			final long delayY = (long)(1000 / velocityY); //there is no need to continue animating until that point
 			postDelayed(new Runnable() //post another animation step
 					{
-						@Override
 						public void run()
 						{
 							slideAnimateStep(startTime, startMatrix, startX, startY, endX, endY, velocityX, velocityY);
@@ -590,7 +588,6 @@ public class ImageSlideView extends View
 		 * @see <a href="http://stackoverflow.com/questions/2089552/android-how-to-detect-when-a-scroll-has-ended">Android: How to detect when a scroll has
 		 *      ended</a>
 		 */
-		@Override
 		public boolean onTouch(final View v, final MotionEvent event)
 		{
 			if(onTouchEvent(event)) //process the touch event normally if needed

@@ -68,7 +68,6 @@ public class Preferences
 	{
 		runOffMainThread(new Runnable()
 		{
-			@Override
 			public void run()
 			{
 				PreferenceManager.setDefaultValues(context, resId, readAgain);

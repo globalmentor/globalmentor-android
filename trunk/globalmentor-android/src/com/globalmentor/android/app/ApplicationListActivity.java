@@ -58,7 +58,6 @@ public class ApplicationListActivity extends BaseActivity
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new OnItemClickListener() //call onApplicationClick() with the application information
 				{
-					@Override
 					public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
 					{
 						final ApplicationInfoAdapter adapter = ((ApplicationInfoAdapter)parent.getAdapter()); //get the adapter...
