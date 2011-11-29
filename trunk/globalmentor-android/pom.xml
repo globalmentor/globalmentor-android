@@ -20,18 +20,16 @@
 			<artifactId>android</artifactId>
 			<version>2.3.3</version>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>com.globalmentor</groupId>
 			<artifactId>globalmentor-core</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<!-- android-maven-plugin can't seem to automatically keep this from being 
+				included twice; it must therefore be included manually (either explicitly 
+				or transitively) in dependent projects -->
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
