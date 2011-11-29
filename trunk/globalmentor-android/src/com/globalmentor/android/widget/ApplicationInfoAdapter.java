@@ -16,21 +16,17 @@
 
 package com.globalmentor.android.widget;
 
-import static com.google.common.base.Preconditions.*;
+import static com.globalmentor.java.Objects.*;
 
 import java.util.List;
 
 import com.globalmentor.android.R;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
+import android.content.pm.*;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 
 /**
  * Adapter for showing installed applications in a list. The application icon, name, and description (if present) is shown.
@@ -61,8 +57,8 @@ public class ApplicationInfoAdapter extends BaseAdapter
 	 */
 	public ApplicationInfoAdapter(final Context context, final List<ApplicationInfo> list)
 	{
-		this.context = checkNotNull(context);
-		this.list = checkNotNull(list);
+		this.context = checkInstance(context);
+		this.list = checkInstance(list);
 	}
 
 	@Override

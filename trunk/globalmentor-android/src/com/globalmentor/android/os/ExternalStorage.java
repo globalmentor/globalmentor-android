@@ -17,7 +17,7 @@
 package com.globalmentor.android.os;
 
 import static android.os.Environment.*;
-import static com.google.common.base.Preconditions.*;
+import static com.globalmentor.java.Objects.*;
 
 import java.io.File;
 
@@ -73,7 +73,7 @@ public class ExternalStorage
 	 */
 	public static File getExternalCacheDirectory(final Context context, final String subdirectory)
 	{
-		final File externalCacheSubdirectory = new File(context.getExternalCacheDir(), checkNotNull(subdirectory)); //create a file for the subdirectory
+		final File externalCacheSubdirectory = new File(context.getExternalCacheDir(), checkInstance(subdirectory)); //create a file for the subdirectory
 		if(!externalCacheSubdirectory.isDirectory() && isWritable()) //if the subdirectory doesn't exist and the external storage is writable
 		{
 			externalCacheSubdirectory.mkdirs(); //try to create the required subdirectory

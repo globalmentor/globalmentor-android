@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import static com.google.common.base.Preconditions.*;
+import static com.globalmentor.java.Objects.*;
 
 import java.util.*;
 
@@ -359,7 +359,7 @@ public class PollStateManager<S> //TODO move to general utility class
 		 */
 		public StateInfo(final S state, final long minDuration, final long maxDuration, final long minPollCount, final long maxPollCount)
 		{
-			this.state = checkNotNull(state);
+			this.state = checkInstance(state);
 			this.minDuration = minDuration;
 			this.maxDuration = maxDuration;
 			this.minPollCount = minPollCount;

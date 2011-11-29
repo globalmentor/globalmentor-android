@@ -17,7 +17,7 @@
 package com.globalmentor.android.app;
 
 import static android.app.DownloadManager.*;
-import static com.google.common.base.Preconditions.*;
+import static com.globalmentor.java.Objects.*;
 
 import android.app.DownloadManager;
 import android.database.Cursor;
@@ -62,12 +62,12 @@ public class DownloadInfo
 	 */
 	protected DownloadInfo(final long id, final Uri uri, final String title, final String description, final int status, final String reason)
 	{
-		this.id = checkNotNull(id);
-		this.uri = checkNotNull(uri);
-		this.title = checkNotNull(title);
-		this.description = checkNotNull(description);
+		this.id = checkInstance(id);
+		this.uri = checkInstance(uri);
+		this.title = checkInstance(title);
+		this.description = checkInstance(description);
 		this.status = status;
-		this.reason = checkNotNull(reason);
+		this.reason = checkInstance(reason);
 	}
 
 	/**

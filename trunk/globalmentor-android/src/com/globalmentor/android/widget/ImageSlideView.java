@@ -17,7 +17,8 @@
 package com.globalmentor.android.widget;
 
 import static com.globalmentor.android.os.Threads.*;
-import static com.google.common.base.Preconditions.*;
+import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Preconditions.*;
 
 import java.util.*;
 
@@ -68,7 +69,7 @@ public class ImageSlideView extends View
 	 */
 	public void setSlideAxis(final Axis slideAxis)
 	{
-		this.slideAxis = checkNotNull(slideAxis);
+		this.slideAxis = checkInstance(slideAxis);
 		gestureListener.setAxes(slideAxis); //inform the gesture listener of the new slide axis
 	}
 
@@ -170,7 +171,7 @@ public class ImageSlideView extends View
 	{
 		if(!images.isEmpty())
 		{
-			checkElementIndex(index, images.size());
+			checkIndexBounds(index, images.size());
 		}
 		checkMainThread();
 		clearImages(); //remove existing images so they can be garbage collected more quickly
@@ -209,11 +210,11 @@ public class ImageSlideView extends View
 	public void addImage(final String imageID, final Bitmap image)
 	{
 		checkMainThread();
-		if(images.containsKey(checkNotNull(imageID)))
+		if(images.containsKey(checkInstance(imageID)))
 		{
 			throw new IllegalArgumentException("Image with ID " + imageID + " already exists.");
 		}
-		images.put(imageID, checkNotNull(image));
+		images.put(imageID, checkInstance(image));
 		imageOrder.add(imageID);
 	}
 
@@ -264,7 +265,7 @@ public class ImageSlideView extends View
 		else
 		//if there are images
 		{
-			checkElementIndex(imageIndex, images.size());
+			checkIndexBounds(imageIndex, images.size());
 		}
 		this.imageIndex = imageIndex; //change the index
 		recalculateImage(); //recalculate the image size and position
@@ -283,7 +284,7 @@ public class ImageSlideView extends View
 	public int goImage(final String imageID)
 	{
 		checkMainThread();
-		final int imageIndex = imageOrder.indexOf(checkNotNull(imageID));
+		final int imageIndex = imageOrder.indexOf(checkInstance(imageID));
 		if(imageIndex >= 0) //if there is such an image ID
 		{
 			goImage(imageIndex); //go to that index

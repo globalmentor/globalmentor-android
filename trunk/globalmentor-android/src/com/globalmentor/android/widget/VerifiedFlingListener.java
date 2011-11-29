@@ -16,7 +16,7 @@
 
 package com.globalmentor.android.widget;
 
-import static com.google.common.base.Preconditions.*;
+import static com.globalmentor.java.Objects.*;
 import static java.util.Collections.*;
 
 import java.util.*;
@@ -82,7 +82,7 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	 */
 	public VerifiedFlingListener(final Context context)
 	{
-		this.context = checkNotNull(context);
+		this.context = checkInstance(context);
 	}
 
 	/**

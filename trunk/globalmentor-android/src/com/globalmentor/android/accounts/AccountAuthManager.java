@@ -16,7 +16,8 @@
 
 package com.globalmentor.android.accounts;
 
-import static com.google.common.base.Preconditions.*;
+import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Preconditions.*;
 
 import java.io.IOException;
 
@@ -96,9 +97,9 @@ public class AccountAuthManager
 	 */
 	public AccountAuthManager(final AccountManager accountManager, final Account account, final String authTokenType)
 	{
-		this.accountManager = checkNotNull(accountManager);
-		this.account = checkNotNull(account);
-		this.authTokenType = checkNotNull(authTokenType);
+		this.accountManager = checkInstance(accountManager);
+		this.account = checkInstance(account);
+		this.authTokenType = checkInstance(authTokenType);
 	}
 
 	/**
@@ -234,7 +235,7 @@ public class AccountAuthManager
 		 */
 		public AuthenticatedWorker(final AuthenticatedOperation operation, int retries)
 		{
-			this.operation = checkNotNull(operation);
+			this.operation = checkInstance(operation);
 			checkArgument(retries >= 0, "Number of retries cannot be negative.");
 			this.retries = retries;
 		}
@@ -318,7 +319,7 @@ public class AccountAuthManager
 		 */
 		public AuthenticateTask(final AuthenticatedOperation postAuthenticateOperation, final int retries)
 		{
-			this.postAuthenticateOperation = checkNotNull(postAuthenticateOperation);
+			this.postAuthenticateOperation = checkInstance(postAuthenticateOperation);
 			checkArgument(retries >= 0, "Number of retries cannot be negative.");
 			this.retries = retries;
 		}
