@@ -28,7 +28,7 @@ import android.widget.*;
  * 
  * <p>
  * This class merely displays a list of applications; it does not perform any functionality when an application in the list is clicked. Such functionality is
- * left to subclasses to perform by overriding e.g. {@link #onApplicationClick(ApplicationInfo)}.
+ * left to subclasses to perform by overriding e.g. {@link #onItemClick(int, long, ApplicationInfo)}.
  * </p>
  * 
  * <p>
@@ -49,17 +49,6 @@ public class ApplicationListActivity extends AbstractListActivity<ApplicationInf
 		final PackageManager packageManager = getPackageManager(); //get a list of applications
 		final List<ApplicationInfo> applications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA); //show the applications using an adapter
 		return new ApplicationInfoAdapter(this, applications);
-	}
-
-	/**
-	 * Called when an application on the list is clicked.
-	 * <p>
-	 * This version does nothing.
-	 * </p>
-	 * @param applicationInfo Information on the application that was clicked.
-	 */
-	public void onApplicationClick(final ApplicationInfo applicationInfo)
-	{
 	}
 
 }
