@@ -18,14 +18,10 @@ package com.globalmentor.android.app;
 
 import java.util.List;
 
-import com.globalmentor.android.R;
 import com.globalmentor.android.widget.ApplicationInfoAdapter;
 
 import android.content.pm.*;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.*;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Activity for showing a list of installed applications.
@@ -44,37 +40,22 @@ import android.widget.AdapterView.OnItemClickListener;
  * 
  * @see <a href="http://xjaphx.wordpress.com/2011/06/12/create-application-launcher-as-a-list/">Create Application Launcher as a list</a>
  */
-public class ApplicationListActivity extends BaseActivity
+public class ApplicationListActivity extends AbstractListActivity<ApplicationInfo>
 {
+
 	@Override
-	public void onCreate(Bundle savedInstanceState)
+	protected ListAdapter createListAdapter()
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.app_applicationlistactivity);
-		final ListView listView = (ListView)findViewById(R.id.app_applicationlistactivity_list);
 		final PackageManager packageManager = getPackageManager(); //get a list of applications
 		final List<ApplicationInfo> applications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA); //show the applications using an adapter
-		final ApplicationInfoAdapter adapter = new ApplicationInfoAdapter(this, applications);
-		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new OnItemClickListener() //call onApplicationClick() with the application information
-				{
-					@Override
-					public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
-					{
-						final ApplicationInfoAdapter adapter = ((ApplicationInfoAdapter)parent.getAdapter()); //get the adapter...
-						final ApplicationInfo applicationInfo = (ApplicationInfo)adapter.getItem(position); //...and get the application info from the adapter
-						onApplicationClick(applicationInfo); //delegate to the application click method
-					}
-				});
+		return new ApplicationInfoAdapter(this, applications);
 	}
 
 	/**
 	 * Called when an application on the list is clicked.
-	 * 
 	 * <p>
 	 * This version does nothing.
 	 * </p>
-	 * 
 	 * @param applicationInfo Information on the application that was clicked.
 	 */
 	public void onApplicationClick(final ApplicationInfo applicationInfo)

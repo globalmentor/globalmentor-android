@@ -34,11 +34,12 @@ public class ApplicationLaunchListActivity extends ApplicationListActivity
 {
 
 	@Override
-	public void onApplicationClick(final ApplicationInfo applicationInfo)
+	public void onItemClick(final int position, final long id, final ApplicationInfo item)
 	{
+		super.onItemClick(position, id, item);
 		try
 		{
-			Applications.launch(this, applicationInfo);
+			Applications.launch(this, item);
 		}
 		catch(final Throwable throwable)
 		{

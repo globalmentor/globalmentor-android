@@ -16,17 +16,11 @@
 
 package com.globalmentor.android.widget;
 
-import static com.globalmentor.java.Objects.*;
-
 import java.util.List;
-
-import com.globalmentor.android.R;
 
 import android.content.Context;
 import android.content.pm.*;
-import android.view.LayoutInflater;
-import android.view.*;
-import android.widget.*;
+import android.graphics.drawable.Drawable;
 
 /**
  * Adapter for showing installed applications in a list. The application icon, name, and description (if present) is shown.
@@ -44,53 +38,37 @@ import android.widget.*;
  * 
  * @see <a href="http://xjaphx.wordpress.com/2011/06/12/create-application-launcher-as-a-list/">Create Application Launcher as a list</a>
  */
-public class ApplicationInfoAdapter extends BaseAdapter
+public class ApplicationInfoAdapter extends AbstractNameDescriptionListAdapter<ApplicationInfo>
 {
-	private final Context context;
-	private final List<ApplicationInfo> list;
-
 	/**
 	 * Constructor.
 	 * @param context The current context.
 	 * @param list The list to adapt.
-	 * @param packageManager The current
+	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
 	 */
 	public ApplicationInfoAdapter(final Context context, final List<ApplicationInfo> list)
 	{
-		this.context = checkInstance(context);
-		this.list = checkInstance(list);
+		super(context, list);
 	}
 
+	/** {@inheritDoc} This implementation delegates to {@link ApplicationInfo#loadLabel(PackageManager)}. */
 	@Override
-	public int getCount()
+	protected CharSequence getItemName(final int position, final long id, final ApplicationInfo item)
 	{
-		return list.size();
+		return item.loadLabel(getContext().getPackageManager());
 	}
 
+	/** {@inheritDoc} This implementation delegates to {@link ApplicationInfo#loadDescription(PackageManager)}. */
 	@Override
-	public Object getItem(int position)
+	protected CharSequence getItemDescription(final int position, final long id, final ApplicationInfo item)
 	{
-		return list.get(position);
+		return item.loadDescription(getContext().getPackageManager());
 	}
 
+	/** {@inheritDoc} This implementation delegates to {@link ApplicationInfo#loadIcon(PackageManager))}. */
 	@Override
-	public long getItemId(int position)
+	protected Drawable getItemIcon(final int position, final long id, final ApplicationInfo item)
 	{
-		return position;
-	}
-
-	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent)
-	{
-		final ApplicationInfo applicationInfo = list.get(position);
-		final View view = convertView != null ? convertView : LayoutInflater.from(context).inflate(R.layout.app_applicationinfoadapter_item, null); //inflate a layout if needed
-		final ImageView iconImageView = (ImageView)view.findViewById(R.id.app_applicationinfoadapter_item_icon);
-		final PackageManager packageManager = context.getPackageManager();
-		iconImageView.setImageDrawable(applicationInfo.loadIcon(packageManager));
-		final TextView labelTextView = (TextView)view.findViewById(R.id.app_applicationinfoadapter_item_label);
-		labelTextView.setText(applicationInfo.loadLabel(packageManager));
-		final TextView descriptionTextView = (TextView)view.findViewById(R.id.app_applicationinfoadapter_item_description);
-		descriptionTextView.setText(applicationInfo.loadDescription(packageManager));
-		return view;
+		return item.loadIcon(getContext().getPackageManager());
 	}
 }
