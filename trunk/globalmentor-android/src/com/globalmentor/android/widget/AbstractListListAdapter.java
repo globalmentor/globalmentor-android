@@ -16,14 +16,12 @@
 
 package com.globalmentor.android.widget;
 
-import static com.globalmentor.java.Objects.*;
-
-import java.util.List;
+import java.util.*;
 
 import android.content.Context;
 
 /**
- * Abstract base adapter for showing lists backed by a {@link List}.</p>
+ * Abstract base adapter for showing lists backed by a {@link List}.
  * 
  * @author Garret Wilson
  * 
@@ -42,7 +40,7 @@ public abstract class AbstractListListAdapter<I> extends AbstractListAdapter<I>
 	}
 
 	/**
-	 * Constructor.
+	 * Context and list constructor. A defensive copy is made of the list.
 	 * @param context The current context.
 	 * @param list The list to adapt.
 	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
@@ -50,7 +48,7 @@ public abstract class AbstractListListAdapter<I> extends AbstractListAdapter<I>
 	public AbstractListListAdapter(final Context context, final List<I> list)
 	{
 		super(context);
-		this.list = checkInstance(list);
+		this.list = new ArrayList<I>(list);
 	}
 
 	/** {@inheritDoc} This version delegates to {@link List#size()}. */

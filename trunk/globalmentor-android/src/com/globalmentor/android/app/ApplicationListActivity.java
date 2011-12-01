@@ -18,7 +18,7 @@ package com.globalmentor.android.app;
 
 import java.util.List;
 
-import com.globalmentor.android.widget.ApplicationInfoAdapter;
+import com.globalmentor.android.widget.ApplicationInfoListAdapter;
 
 import android.content.pm.*;
 import android.widget.*;
@@ -48,7 +48,7 @@ public class ApplicationListActivity extends AbstractListActivity<ApplicationInf
 	{
 		final PackageManager packageManager = getPackageManager(); //get a list of applications
 		final List<ApplicationInfo> applications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA); //show the applications using an adapter
-		return new ApplicationInfoAdapter(this, applications);
+		return new ApplicationInfoListAdapter(this, applications);
 	}
 
 }

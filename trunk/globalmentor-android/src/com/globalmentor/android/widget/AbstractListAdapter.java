@@ -24,7 +24,7 @@ import android.view.*;
 import android.widget.*;
 
 /**
- * Abstract base adapter for showing lists, adding generics and convenience methods.</p>
+ * Abstract base adapter for showing lists, adding generics and convenience methods.
  * 
  * @author Garret Wilson
  * 

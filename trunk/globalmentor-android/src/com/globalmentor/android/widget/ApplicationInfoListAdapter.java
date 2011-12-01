@@ -38,15 +38,15 @@ import android.graphics.drawable.Drawable;
  * 
  * @see <a href="http://xjaphx.wordpress.com/2011/06/12/create-application-launcher-as-a-list/">Create Application Launcher as a list</a>
  */
-public class ApplicationInfoAdapter extends AbstractNameDescriptionListAdapter<ApplicationInfo>
+public class ApplicationInfoListAdapter extends AbstractNameDescriptionListAdapter<ApplicationInfo>
 {
 	/**
-	 * Constructor.
+	 * Context and list constructor. A defensive copy is made of the list.
 	 * @param context The current context.
 	 * @param list The list to adapt.
 	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
 	 */
-	public ApplicationInfoAdapter(final Context context, final List<ApplicationInfo> list)
+	public ApplicationInfoListAdapter(final Context context, final List<ApplicationInfo> list)
 	{
 		super(context, list);
 	}

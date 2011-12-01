@@ -26,7 +26,7 @@ import android.view.*;
 import android.widget.*;
 
 /**
- * Abstract base adapter for showing a list of names and descriptions along with an icon.
+ * Abstract base adapter for showing a list of names and descriptions along with an icon. By default the icon is present.
  * 
  * <p>
  * This implementation uses a backing {@link List}.
@@ -39,8 +39,26 @@ import android.widget.*;
 public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractListListAdapter<I>
 {
 
+	/** Whether an icon should be present with the items. */
+	private boolean iconPresent = true;
+
+	/** @return Whether an icon should be present with the items. */
+	public boolean isIconPresent()
+	{
+		return iconPresent;
+	}
+
 	/**
-	 * Constructor.
+	 * Whether an icon should be present with the items.
+	 * @param iconPresent Whether an icon should be present.
+	 */
+	public void setIconPresent(final boolean iconPresent)
+	{
+		this.iconPresent = iconPresent;
+	}
+
+	/**
+	 * Context and list constructor. A defensive copy is made of the list.
 	 * @param context The current context.
 	 * @param list The list to adapt.
 	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
@@ -60,6 +78,7 @@ public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractList
 	protected void initializeView(final View view, int position, long id, I item, ViewGroup parent)
 	{
 		final ImageView iconImageView = (ImageView)view.findViewById(R.id.app_abstractnamedescriptionlistadapter_item_icon);
+		iconImageView.setVisibility(isIconPresent() ? ImageView.VISIBLE : ImageView.GONE); //set the visibility of the icon
 		iconImageView.setImageDrawable(getItemIcon(position, id, item));
 		final TextView labelTextView = (TextView)view.findViewById(R.id.app_abstractnamedescriptionlistadapter_item_label);
 		labelTextView.setText(getItemName(position, id, item));
