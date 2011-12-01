@@ -16,13 +16,21 @@
 
 package com.globalmentor.android.app;
 
+import static com.globalmentor.java.Conditions.*;
+
+import java.text.DateFormat;
 import java.util.*;
 
+import com.globalmentor.android.R;
 import com.globalmentor.android.widget.NameValueListAdapter;
 import com.globalmentor.model.NameValuePair;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.pm.*;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.provider.Settings.Secure;
 import android.widget.*;
 
 /**
@@ -37,22 +45,44 @@ public class AboutListActivity extends AbstractListActivity<ApplicationInfo>
 	@Override
 	protected ListAdapter createListAdapter()
 	{
+		final Resources resources = getResources();
 		final List<NameValuePair<CharSequence, Object>> properties = new ArrayList<NameValuePair<CharSequence, Object>>();
-		//application name and version
-		final String packageName = getPackageName(); //get the name of the application package
 		final PackageManager packageManager = getPackageManager();
+		final String packageName = getPackageName(); //get the name of the application package
+		final ApplicationInfo applicationInfo;
+		final PackageInfo packageInfo;
 		try
 		{
-			final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA); //get information about the application itself from its package
-			final CharSequence applicationName = packageManager.getApplicationLabel(applicationInfo); //get the application name (label)
-			final PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0); //get information about the application package
-			final CharSequence applicationVersion = packageInfo.versionName + " (" + packageInfo.versionCode + ")";
-			properties.add(new NameValuePair<CharSequence, Object>(applicationName, applicationVersion));
+			applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA); //get information about the application itself from its package
+			packageInfo = packageManager.getPackageInfo(packageName, 0); //get information about the application package
 		}
-		catch(NameNotFoundException e)
+		catch(final NameNotFoundException nameNotFoundException)
 		{
-			throw new AssertionError("Could not find information for application package " + packageName); //we should always be able to retrieve information on the current application
+			throw unexpected("Could not find information for application package " + packageName, nameNotFoundException);
 		}
+		//application name and version
+		final CharSequence applicationName = packageManager.getApplicationLabel(applicationInfo); //get the application name (label)
+		final CharSequence applicationVersion = packageInfo.versionName + " (" + packageInfo.versionCode + ")";
+		properties.add(new NameValuePair<CharSequence, Object>(applicationName, applicationVersion));
+		//first installed
+		final DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+		final DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(this);
+		final Date firstInstalled = new Date(packageInfo.firstInstallTime);
+		properties.add(new NameValuePair<CharSequence, Object>(resources.getString(R.string.app_aboutlistactivity_first_installed_label), dateFormat
+				.format(firstInstalled) + ' ' + timeFormat.format(firstInstalled)));
+		//last updated
+		final Date lastUpdated = new Date(packageInfo.lastUpdateTime);
+		properties.add(new NameValuePair<CharSequence, Object>(resources.getString(R.string.app_aboutlistactivity_last_updated_label), dateFormat
+				.format(lastUpdated) + ' ' + timeFormat.format(lastUpdated)));
+		//Android ID; see http://android-developers.blogspot.com/2011/03/identifying-app-installations.html, http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+		properties.add(new NameValuePair<CharSequence, Object>(resources.getString(R.string.app_aboutlistactivity_android_id_label), Secure.getString(
+				getContentResolver(), Secure.ANDROID_ID)));
+		//available memory
+		final ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+		final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+		activityManager.getMemoryInfo(memoryInfo);
+		properties.add(new NameValuePair<CharSequence, Object>(resources.getString(R.string.app_aboutlistactivity_available_memory_label), Long
+				.valueOf(memoryInfo.availMem))); //TODO pretty-print
 		return new NameValueListAdapter(this, properties);
 	}
 

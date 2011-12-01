@@ -18,7 +18,7 @@ package com.globalmentor.android.widget;
 
 import static com.globalmentor.android.os.Threads.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 
 import java.util.*;
 

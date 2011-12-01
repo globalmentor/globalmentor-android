@@ -2,5 +2,10 @@
 <resources>
 
     <string name="app_aboutlistactivity_label">About</string>
+    <!-- properties -->
+    <string name="app_aboutlistactivity_first_installed_label">First Installed</string>
+    <string name="app_aboutlistactivity_last_updated_label">Last Updated</string>
+    <string name="app_aboutlistactivity_android_id_label">Device Android ID</string>
+    <string name="app_aboutlistactivity_available_memory_label">Available Memory</string>
 
 </resources>

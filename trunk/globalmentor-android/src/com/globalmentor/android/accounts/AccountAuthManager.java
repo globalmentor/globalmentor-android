@@ -17,7 +17,7 @@
 package com.globalmentor.android.accounts;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 
 import java.io.IOException;
 
