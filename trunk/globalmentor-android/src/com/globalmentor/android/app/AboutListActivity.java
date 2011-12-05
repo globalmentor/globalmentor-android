@@ -24,6 +24,7 @@ import java.util.*;
 import com.globalmentor.android.R;
 import com.globalmentor.android.widget.NameValueListAdapter;
 import com.globalmentor.model.NameValuePair;
+import com.globalmentor.si.SIUnit;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -81,8 +82,8 @@ public class AboutListActivity extends AbstractListActivity<ApplicationInfo>
 		final ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 		final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
 		activityManager.getMemoryInfo(memoryInfo);
-		properties.add(new NameValuePair<CharSequence, Object>(resources.getString(R.string.app_aboutlistactivity_available_memory_label), Long
-				.valueOf(memoryInfo.availMem))); //TODO pretty-print
+		properties.add(new NameValuePair<CharSequence, Object>(resources.getString(R.string.app_aboutlistactivity_available_memory_label), SIUnit.BYTE
+				.format(memoryInfo.availMem)));
 		return new NameValueListAdapter(this, properties);
 	}
 
