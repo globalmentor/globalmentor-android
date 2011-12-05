@@ -18,6 +18,7 @@ package com.globalmentor.android.app;
 
 import android.content.*;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 /**
@@ -27,6 +28,20 @@ import android.content.pm.PackageManager.NameNotFoundException;
  */
 public class Applications
 {
+
+	/**
+	 * Checks whether the current application has the given permission.
+	 * @param context The current context.
+	 * @param permissionName The name of the permission to check.
+	 * @return <code>true</code> if the application for the current context has the indicated permission.
+	 * @throws NullPointerException if the given context and/or permission name is <code>null</code>.
+	 * @see PackageManager#checkPermission(String, String)
+	 */
+	public static boolean hasPermission(final Context context, final String permissionName)
+	{
+		return context.getPackageManager().checkPermission(permissionName, context.getPackageName()) == PackageManager.PERMISSION_GRANTED;
+
+	}
 
 	/**
 	 * Determines whether the current application is in debug mode.
