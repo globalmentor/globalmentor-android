@@ -22,6 +22,7 @@ import static com.globalmentor.java.Conditions.*;
 import java.io.IOException;
 
 import android.accounts.*;
+import android.accounts.OperationCanceledException;
 import android.content.Intent;
 import android.os.*;
 
