@@ -26,13 +26,16 @@ import com.globalmentor.android.R;
 import com.globalmentor.time.Milliseconds;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -739,6 +742,134 @@ public class Notifications
 						}
 					}, duration); //delay the notification cancellation
 		}
+	}
+
+	/**
+	 * Asks the user a question, using the question default icon, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener yesOnClickListener)
+	{
+		ask(context, messageResId, titleResId, 0, yesOnClickListener);
+	}
+
+	/**
+	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default question icon should be used.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final int messageResId, final int titleResId, final int iconResId,
+			final DialogInterface.OnClickListener yesOnClickListener)
+	{
+		ask(context, messageResId, titleResId, iconResId, yesOnClickListener, null);
+	}
+
+	/**
+	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default question icon should be used.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @param noOnClickListener The handler for the "no" response, or <code>null</code> if no special action should be taken if the user selects "no".
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final int messageResId, final int titleResId, final int iconResId,
+			final DialogInterface.OnClickListener yesOnClickListener, final DialogInterface.OnClickListener noOnClickListener)
+	{
+		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
+		final String message = messageResId == 0 ? null : resources.getString(messageResId);
+		final String title = titleResId == 0 ? null : resources.getString(titleResId);
+		final Drawable icon = iconResId == 0 ? null : resources.getDrawable(iconResId);
+		ask(context, message, title, icon, yesOnClickListener, noOnClickListener);
+	}
+
+	/**
+	 * Asks the user a question, using the question default icon, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final CharSequence message, final CharSequence title, final DialogInterface.OnClickListener yesOnClickListener)
+	{
+		ask(context, message, title, null, yesOnClickListener);
+	}
+
+	/**
+	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if a default question icon should be used.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final CharSequence message, final CharSequence title, final Drawable icon,
+			final DialogInterface.OnClickListener yesOnClickListener)
+	{
+		ask(context, message, title, icon, yesOnClickListener, null);
+	}
+
+	/**
+	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if a default question icon should be used.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @param noOnClickListener The handler for the "no" response, or <code>null</code> if no special action should be taken if the user selects "no".
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final CharSequence message, final CharSequence title, Drawable icon,
+			final DialogInterface.OnClickListener yesOnClickListener, DialogInterface.OnClickListener noOnClickListener)
+	{
+		final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+		if(message != null)
+		{
+			alertDialogBuilder.setMessage(message);
+		}
+		if(title != null)
+		{
+			alertDialogBuilder.setTitle(title);
+		}
+		if(icon == null) //use a default icon if none is given
+		{
+			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_help);
+		}
+		alertDialogBuilder.setIcon(icon); //there will always be an icon, if only because we use a default one
+		//use our own yes/no strings, because Android as of 4.2 maps them to "OK" and Cancel", which have different semantics
+		//see http://code.google.com/p/android/issues/detail?id=3713
+		alertDialogBuilder.setPositiveButton(R.string.yes, checkInstance(yesOnClickListener, "A response handler must be provided for the \"yes\" option."));
+		if(noOnClickListener == null) //create a fake listener of no "no" listener was provided
+		{
+			noOnClickListener = new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(final DialogInterface dialog, final int which)
+				{
+				}
+			};
+		}
+		alertDialogBuilder.setNegativeButton(R.string.no, yesOnClickListener);
+		final AlertDialog alertDialog = alertDialogBuilder.create();
+		runOnMainThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				alertDialog.show();
+			}
+		});
 	}
 
 }

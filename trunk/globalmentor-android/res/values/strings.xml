@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- words -->
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+
+    <!-- labels -->
     <string name="about_label">About</string>
     <string name="error_label">Error</string>
 
