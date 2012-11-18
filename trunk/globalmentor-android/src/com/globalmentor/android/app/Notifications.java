@@ -17,6 +17,7 @@
 package com.globalmentor.android.app;
 
 import static com.globalmentor.android.os.Threads.*;
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Objects.*;
 
@@ -26,13 +27,8 @@ import com.globalmentor.android.R;
 import com.globalmentor.time.Milliseconds;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.app.*;
+import android.content.*;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.drawable.Drawable;
@@ -50,6 +46,15 @@ import android.widget.Toast;
  */
 public class Notifications
 {
+
+	/** A click handler that does nothing. */
+	private final static DialogInterface.OnClickListener NOP_ON_CLICK_HANDLER = new DialogInterface.OnClickListener()
+	{
+		@Override
+		public void onClick(final DialogInterface dialog, final int which)
+		{
+		}
+	};
 
 	/**
 	 * The atomic integer representing the next ID to use for notifications. Because each application gets a separate instance of the Dalvik VM, maintaining the
@@ -745,55 +750,86 @@ public class Notifications
 	}
 
 	/**
-	 * Asks the user a question, using the question default icon, expecting a "yes"/"no" answer.
+	 * Asks the user a question via a dialog, using the question default icon, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final int messageResId, final DialogInterface.OnClickListener yesOnClickListener,
+			final Object... messageFormatArgs)
+	{
+		ask(context, messageResId, null, yesOnClickListener, messageFormatArgs);
+	}
+
+	/**
+	 * Asks the user a question via a dialog, using the question default icon, expecting a "yes"/"no" answer.
 	 * @param context The current context.
 	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
 	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
 	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
-	public static void ask(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener yesOnClickListener)
+	public static void ask(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener yesOnClickListener,
+			final Object... messageFormatArgs)
 	{
-		ask(context, messageResId, titleResId, 0, yesOnClickListener);
+		ask(context, messageResId, titleResId, 0, yesOnClickListener, messageFormatArgs);
 	}
 
 	/**
-	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * Asks the user a question via a dialog, expecting a "yes"/"no" answer.
 	 * @param context The current context.
 	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
 	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
 	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default question icon should be used.
 	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final int messageResId, final int titleResId, final int iconResId,
-			final DialogInterface.OnClickListener yesOnClickListener)
+			final DialogInterface.OnClickListener yesOnClickListener, final Object... messageFormatArgs)
 	{
-		ask(context, messageResId, titleResId, iconResId, yesOnClickListener, null);
+		ask(context, messageResId, titleResId, iconResId, yesOnClickListener, null, messageFormatArgs);
 	}
 
 	/**
-	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * Asks the user a question via a dialog, expecting a "yes"/"no" answer.
 	 * @param context The current context.
 	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
 	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
 	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default question icon should be used.
 	 * @param yesOnClickListener The handler for the "yes" response.
 	 * @param noOnClickListener The handler for the "no" response, or <code>null</code> if no special action should be taken if the user selects "no".
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final int messageResId, final int titleResId, final int iconResId,
-			final DialogInterface.OnClickListener yesOnClickListener, final DialogInterface.OnClickListener noOnClickListener)
+			final DialogInterface.OnClickListener yesOnClickListener, final DialogInterface.OnClickListener noOnClickListener, final Object... messageFormatArgs)
 	{
 		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
-		final String message = messageResId == 0 ? null : resources.getString(messageResId);
+		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
+				.getString(messageResId));
 		final String title = titleResId == 0 ? null : resources.getString(titleResId);
 		final Drawable icon = iconResId == 0 ? null : resources.getDrawable(iconResId);
 		ask(context, message, title, icon, yesOnClickListener, noOnClickListener);
 	}
 
 	/**
-	 * Asks the user a question, using the question default icon, expecting a "yes"/"no" answer.
+	 * Asks the user a question via a dialog, using the question default icon, expecting a "yes"/"no" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param yesOnClickListener The handler for the "yes" response.
+	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
+	 */
+	public static void ask(final Context context, final CharSequence message, final DialogInterface.OnClickListener yesOnClickListener)
+	{
+		ask(context, message, null, yesOnClickListener);
+	}
+
+	/**
+	 * Asks the user a question via a dialog, using the question default icon, expecting a "yes"/"no" answer.
 	 * @param context The current context.
 	 * @param message The message to show, or <code>null</code> if no message should be shown.
 	 * @param title The title to use, or <code>null</code> if no title should be used.
@@ -806,7 +842,7 @@ public class Notifications
 	}
 
 	/**
-	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * Asks the user a question via a dialog, expecting a "yes"/"no" answer.
 	 * @param context The current context.
 	 * @param message The message to show, or <code>null</code> if no message should be shown.
 	 * @param title The title to use, or <code>null</code> if no title should be used.
@@ -821,7 +857,7 @@ public class Notifications
 	}
 
 	/**
-	 * Asks the user a question, expecting a "yes"/"no" answer.
+	 * Asks the user a question via a dialog, expecting a "yes"/"no" answer.
 	 * @param context The current context.
 	 * @param message The message to show, or <code>null</code> if no message should be shown.
 	 * @param title The title to use, or <code>null</code> if no title should be used.
@@ -833,34 +869,424 @@ public class Notifications
 	public static void ask(final Context context, final CharSequence message, final CharSequence title, Drawable icon,
 			final DialogInterface.OnClickListener yesOnClickListener, DialogInterface.OnClickListener noOnClickListener)
 	{
+		if(icon == null) //use a default icon if none is given
+		{
+			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_help);
+		}
+		final Resources resources = context.getResources();
+		//use our own yes/no strings, because Android as of 4.2 maps them to "OK" and Cancel", which have different semantics
+		//see http://code.google.com/p/android/issues/detail?id=3713
+		final String yesText = resources.getString(R.string.yes);
+		final String noText = resources.getString(R.string.no); //always provide a "no" option when asking
+		alert(context, message, title, icon, yesText, yesOnClickListener, noText, noOnClickListener);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, using the question default icon, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final int messageResId, final DialogInterface.OnClickListener okOnClickListener,
+			final Object... messageFormatArgs)
+	{
+		confirm(context, messageResId, null, okOnClickListener, messageFormatArgs);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, using the question default icon, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener okOnClickListener,
+			final Object... messageFormatArgs)
+	{
+		confirm(context, messageResId, titleResId, 0, okOnClickListener, messageFormatArgs);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default question icon should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final int messageResId, final int titleResId, final int iconResId,
+			final DialogInterface.OnClickListener okOnClickListener, final Object... messageFormatArgs)
+	{
+		confirm(context, messageResId, titleResId, iconResId, okOnClickListener, null, messageFormatArgs);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default question icon should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param cancelOnClickListener The handler for the "cancel" response, or <code>null</code> if no special action should be taken if the user selects "cancel".
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final int messageResId, final int titleResId, final int iconResId,
+			final DialogInterface.OnClickListener okOnClickListener, final DialogInterface.OnClickListener cancelOnClickListener, final Object... messageFormatArgs)
+	{
+		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
+		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
+				.getString(messageResId));
+		final String title = titleResId == 0 ? null : resources.getString(titleResId);
+		final Drawable icon = iconResId == 0 ? null : resources.getDrawable(iconResId);
+		confirm(context, message, title, icon, okOnClickListener, cancelOnClickListener);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, using the question default icon, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final CharSequence message, final DialogInterface.OnClickListener okOnClickListener)
+	{
+		confirm(context, message, null, okOnClickListener);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, using the question default icon, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final CharSequence message, final CharSequence title,
+			final DialogInterface.OnClickListener okOnClickListener)
+	{
+		confirm(context, message, title, null, okOnClickListener);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if a default question icon should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final CharSequence message, final CharSequence title, final Drawable icon,
+			final DialogInterface.OnClickListener okOnClickListener)
+	{
+		confirm(context, message, title, icon, okOnClickListener, null);
+	}
+
+	/**
+	 * Confirms something with the user via a dialog, expecting an "OK"/"cancel" answer.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if a default question icon should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param cancelOnClickListener The handler for the "cancel" response, or <code>null</code> if no special action should be taken if the user selects "cancel".
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void confirm(final Context context, final CharSequence message, final CharSequence title, Drawable icon,
+			final DialogInterface.OnClickListener okOnClickListener, DialogInterface.OnClickListener cancelOnClickListener)
+	{
+		if(icon == null) //use a default icon if none is given
+		{
+			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_help);
+		}
+		final Resources resources = context.getResources();
+		final String okText = resources.getString(android.R.string.ok);
+		final String cancelText = resources.getString(android.R.string.cancel); //always provide a "cancel" option when confirming
+		alert(context, message, title, icon, okText, okOnClickListener, cancelText, cancelOnClickListener);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final Object... messageFormatArgs)
+	{
+		alert(context, messageResId, null, messageFormatArgs);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final int titleResId, final Object... messageFormatArgs)
+	{
+		alert(context, messageResId, titleResId, 0, messageFormatArgs);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final DialogInterface.OnClickListener okOnClickListener,
+			final Object... messageFormatArgs)
+	{
+		alert(context, messageResId, null, okOnClickListener, messageFormatArgs);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener okOnClickListener,
+			final Object... messageFormatArgs)
+	{
+		alert(context, messageResId, titleResId, 0, okOnClickListener, messageFormatArgs);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default information icon should be used.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId, final Object... messageFormatArgs)
+	{
+		alert(context, messageResId, titleResId, iconResId, NOP_ON_CLICK_HANDLER, messageFormatArgs);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if a default information icon should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId,
+			final DialogInterface.OnClickListener okOnClickListener, final Object... messageFormatArgs)
+	{
+		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
+		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
+				.getString(messageResId));
+		final String title = titleResId == 0 ? null : resources.getString(titleResId);
+		final Drawable icon = iconResId == 0 ? null : resources.getDrawable(iconResId);
+		alert(context, message, title, icon, okOnClickListener);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message)
+	{
+		alert(context, message, (CharSequence)null);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message, final CharSequence title)
+	{
+		alert(context, message, title, NOP_ON_CLICK_HANDLER);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message, final DialogInterface.OnClickListener okOnClickListener)
+	{
+		alert(context, message, null, okOnClickListener);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, using the information default icon.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message, final CharSequence title, final DialogInterface.OnClickListener okOnClickListener)
+	{
+		alert(context, message, title, null, okOnClickListener);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if a default information icon should be used.
+	 * @throws NullPointerException if the given context is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message, final CharSequence title, Drawable icon)
+	{
+		alert(context, message, title, icon, null);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if a default information icon should be used.
+	 * @param okOnClickListener The handler for the "OK" response.
+	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message, final CharSequence title, Drawable icon,
+			final DialogInterface.OnClickListener okOnClickListener)
+	{
+		if(icon == null) //use a default icon if none is given
+		{
+			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_info_details);
+		}
+		final Resources resources = context.getResources();
+		final String okText = resources.getString(android.R.string.ok);
+		alert(context, message, title, icon, okText, okOnClickListener);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, with a positive response.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if no icon should be used.
+	 * @param positiveTextResId The text for the positive option.
+	 * @param positiveOnClickListener The handler for the positive response.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or positive click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId, final int positiveTextResId,
+			final DialogInterface.OnClickListener positiveOnClickListener, final Object... messageFormatArgs)
+	{
+		alert(context, messageResId, titleResId, iconResId, positiveTextResId, positiveOnClickListener, messageFormatArgs);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, with a positive and optional negative response.
+	 * @param context The current context.
+	 * @param messageResId The resource ID of the message to show, or <code>0</code> if no message should be shown.
+	 * @param titleResId The resource ID title to use, or <code>0</code> if no title should be used.
+	 * @param iconResId The resource ID of the icon to use, or <code>0</code> if no icon should be used.
+	 * @param positiveTextResId The text for the positive option.
+	 * @param positiveOnClickListener The handler for the positive response.
+	 * @param negativeTextResId The text for the negative option, or <code>0</code> if no negative option should be shown.
+	 * @param negativeOnClickListener The handler for the negative response, or <code>null</code> if no special action should be taken if the user selects the
+	 *          negative option.
+	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
+	 * @throws NullPointerException if the given context and/or positive click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId, final int positiveTextResId,
+			final DialogInterface.OnClickListener positiveOnClickListener, final int negativeTextResId,
+			final DialogInterface.OnClickListener negativeOnClickListener, final Object... messageFormatArgs)
+	{
+		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
+		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
+				.getString(messageResId));
+		final String title = titleResId == 0 ? null : resources.getString(titleResId);
+		final Drawable icon = iconResId == 0 ? null : resources.getDrawable(iconResId);
+		final String positiveText = positiveTextResId == 0 ? null : resources.getString(positiveTextResId); //we'll check for null in the delegate method
+		final String negativeText = negativeTextResId == 0 ? null : resources.getString(negativeTextResId);
+		alert(context, message, title, icon, positiveText, positiveOnClickListener, negativeText, negativeOnClickListener);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if no icon should be used.
+	 * @param positiveText The text for the positive option.
+	 * @param positiveOnClickListener The handler for the positive response.
+	 * @throws NullPointerException if the given context and/or positive click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message, final CharSequence title, final Drawable icon, final CharSequence positiveText,
+			final DialogInterface.OnClickListener positiveOnClickListener)
+	{
+		alert(context, message, title, icon, positiveText, positiveOnClickListener, null, null);
+	}
+
+	/**
+	 * Alerts the user to something via a dialog, with a positive and optional negative response.
+	 * @param context The current context.
+	 * @param message The message to show, or <code>null</code> if no message should be shown.
+	 * @param title The title to use, or <code>null</code> if no title should be used.
+	 * @param icon The icon to use, or <code>null</code> if no icon should be used.
+	 * @param positiveText The text for the positive option.
+	 * @param positiveOnClickListener The handler for the positive response.
+	 * @param negativeText The text for the negative option, or <code>null</code> if no negative option should be shown.
+	 * @param negativeOnClickListener The handler for the negative response, or <code>null</code> if no special action should be taken if the user selects the
+	 *          negative option.
+	 * @throws NullPointerException if the given context and/or positive click listener is <code>null</code>.
+	 */
+	public static void alert(final Context context, final CharSequence message, CharSequence title, final Drawable icon, final CharSequence positiveText,
+			final DialogInterface.OnClickListener positiveOnClickListener, final CharSequence negativeText, DialogInterface.OnClickListener negativeOnClickListener)
+	{
 		final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 		if(message != null)
 		{
 			alertDialogBuilder.setMessage(message);
 		}
+		if(icon != null)
+		{
+			alertDialogBuilder.setIcon(icon);
+			if(title == null) //if there is no title, provide an empty title so the icon will appear
+			{
+				title = String.valueOf(NO_BREAK_SPACE_CHAR);
+			}
+		}
 		if(title != null)
 		{
 			alertDialogBuilder.setTitle(title);
 		}
-		if(icon == null) //use a default icon if none is given
-		{
-			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_help);
-		}
 		alertDialogBuilder.setIcon(icon); //there will always be an icon, if only because we use a default one
-		//use our own yes/no strings, because Android as of 4.2 maps them to "OK" and Cancel", which have different semantics
-		//see http://code.google.com/p/android/issues/detail?id=3713
-		alertDialogBuilder.setPositiveButton(R.string.yes, checkInstance(yesOnClickListener, "A response handler must be provided for the \"yes\" option."));
-		if(noOnClickListener == null) //create a fake listener of no "no" listener was provided
+		alertDialogBuilder.setPositiveButton(positiveText, checkInstance(positiveOnClickListener, "A response handler must be provided for the positive option."));
+		if(negativeText != null)
 		{
-			noOnClickListener = new DialogInterface.OnClickListener()
+			if(negativeOnClickListener == null) //use a dummy listener of no negative on-click listener was provided
 			{
-				@Override
-				public void onClick(final DialogInterface dialog, final int which)
-				{
-				}
-			};
+				negativeOnClickListener = NOP_ON_CLICK_HANDLER;
+			}
+			alertDialogBuilder.setNegativeButton(negativeText, negativeOnClickListener);
 		}
-		alertDialogBuilder.setNegativeButton(R.string.no, yesOnClickListener);
 		final AlertDialog alertDialog = alertDialogBuilder.create();
 		runOnMainThread(new Runnable()
 		{
