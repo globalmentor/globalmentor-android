@@ -760,7 +760,7 @@ public class Notifications
 	public static void ask(final Context context, final int messageResId, final DialogInterface.OnClickListener yesOnClickListener,
 			final Object... messageFormatArgs)
 	{
-		ask(context, messageResId, null, yesOnClickListener, messageFormatArgs);
+		ask(context, messageResId, 0, yesOnClickListener, messageFormatArgs);
 	}
 
 	/**
@@ -892,7 +892,7 @@ public class Notifications
 	public static void confirm(final Context context, final int messageResId, final DialogInterface.OnClickListener okOnClickListener,
 			final Object... messageFormatArgs)
 	{
-		confirm(context, messageResId, null, okOnClickListener, messageFormatArgs);
+		confirm(context, messageResId, 0, okOnClickListener, messageFormatArgs);
 	}
 
 	/**
@@ -1021,7 +1021,7 @@ public class Notifications
 	 */
 	public static void alert(final Context context, final int messageResId, final Object... messageFormatArgs)
 	{
-		alert(context, messageResId, null, messageFormatArgs);
+		alert(context, messageResId, 0, messageFormatArgs);
 	}
 
 	/**
@@ -1048,7 +1048,7 @@ public class Notifications
 	public static void alert(final Context context, final int messageResId, final DialogInterface.OnClickListener okOnClickListener,
 			final Object... messageFormatArgs)
 	{
-		alert(context, messageResId, null, okOnClickListener, messageFormatArgs);
+		alert(context, messageResId, 0, okOnClickListener, messageFormatArgs);
 	}
 
 	/**
