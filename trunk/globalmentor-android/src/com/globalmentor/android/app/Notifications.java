@@ -1246,6 +1246,13 @@ public class Notifications
 
 	/**
 	 * Alerts the user to something via a dialog, with a positive and optional negative response.
+	 * <p>
+	 * If no title is provided but an icon is given, a dummy title of a non-breaking space will be used so that the icon will appear.
+	 * </p>
+	 * <p>
+	 * If a specific negative on-click listener is provided, canceling the dialog by using the back button will be prevented to ensure canceling does not occur
+	 * without the caller's listener being invoked.
+	 * </p>
 	 * @param context The current context.
 	 * @param message The message to show, or <code>null</code> if no message should be shown.
 	 * @param title The title to use, or <code>null</code> if no title should be used.
@@ -1279,15 +1286,22 @@ public class Notifications
 		}
 		alertDialogBuilder.setIcon(icon); //there will always be an icon, if only because we use a default one
 		alertDialogBuilder.setPositiveButton(positiveText, checkInstance(positiveOnClickListener, "A response handler must be provided for the positive option."));
+		boolean cancelable = true; //default to allowing the dialog to be cancelable
 		if(negativeText != null)
 		{
-			if(negativeOnClickListener == null) //use a dummy listener of no negative on-click listener was provided
+			if(negativeOnClickListener != null) //if the caller wants to do something specifically when the negative option is chosen
 			{
-				negativeOnClickListener = NOP_ON_CLICK_HANDLER;
+				cancelable = false; //don't allow the back button to cancel the dialog, ensuring that the negative on-click listener gets called
+			}
+			else
+			//if no negative on-click listener was provided
+			{
+				negativeOnClickListener = NOP_ON_CLICK_HANDLER; //use a dummy listener
 			}
 			alertDialogBuilder.setNegativeButton(negativeText, negativeOnClickListener);
 		}
 		final AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.setCancelable(cancelable); //specify whether the dialog can be canceled
 		runOnMainThread(new Runnable()
 		{
 			@Override
