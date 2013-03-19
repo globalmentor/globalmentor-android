@@ -88,28 +88,19 @@ public class Accounts
 	/**
 	 * Returns the registered Google account that supports mail. If there are multiple registered Google mail accounts, the first one will be returned.
 	 * <p>
-	 * This method should be called only in circumstances where it is expected that a Google mail account be registered.
-	 * </p>
-	 * <p>
 	 * This method must not be used on the main thread, as it will block until all relevant accounts are retrieved.
 	 * </p>
 	 * @param context The Android context.
-	 * @return The first registered Google mail account.
+	 * @return The first registered Google mail account, or <code>null</code> if there is no registered Google mail account.
 	 * @throws OperationCanceledException if the request was canceled for any reason.
 	 * @throws AuthenticatorException if there was an error communicating with the authenticator or if the authenticator returned an invalid response.
 	 * @throws IOException if the authenticator encountered an IOException while communicating with the authentication server.
-	 * @throws IllegalStateException if no Google mail account is registered.
 	 * @see #getGoogleAccountsByFeature(Context, String...)
 	 */
 	public static Account getGoogleMailAccount(final Context context) throws OperationCanceledException, AuthenticatorException, IOException
 	{
-		final Account[] accounts;
-		accounts = getGoogleAccountsByFeature(context, MAIL_FEATURE).getResult();
-		if(accounts.length == 0)
-		{
-			throw new IllegalStateException("No Google mail account registered.");
-		}
-		return accounts[0];
+		final Account[] accounts = getGoogleAccountsByFeature(context, MAIL_FEATURE).getResult();
+		return accounts.length > 0 ? accounts[0] : null;
 	}
 
 }
