@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2011-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.globalmentor.android.preference;
 
-import static com.globalmentor.android.os.Threads.*;
 import static java.util.Collections.*;
 
 import java.util.*;
@@ -41,7 +40,8 @@ public class Preferences
 	/**
 	 * Set the default preference values from the indicated preferences resource, but only if they haven't yet been set before.
 	 * <p>
-	 * This method starts the operation in a separate thread to avoid file accesses on the main thread.
+	 * This method no longer starts the operation in a separate thread, as later versions of Android throw a runtime exception of
+	 * "Can't create handler inside thread that has not called Looper.prepare()" if called during activity inflation.
 	 * </p>
 	 * @param context The current context.
 	 * @param resId The resource ID of the preference hierarchy XML file.
@@ -56,7 +56,8 @@ public class Preferences
 	/**
 	 * Set the default preference values from the indicated preferences resource.
 	 * <p>
-	 * This method starts the operation in a separate thread to avoid file accesses on the main thread.
+	 * This method no longer starts the operation in a separate thread, as later versions of Android throw a runtime exception of
+	 * "Can't create handler inside thread that has not called Looper.prepare()" if called during activity inflation.
 	 * </p>
 	 * @param context The current context.
 	 * @param resId The resource ID of the preference hierarchy XML file.
@@ -66,14 +67,7 @@ public class Preferences
 	 */
 	public static void initializeDefaultValues(final Context context, final int resId, final boolean readAgain)
 	{
-		runOffMainThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				PreferenceManager.setDefaultValues(context, resId, readAgain);
-			}
-		});
+		PreferenceManager.setDefaultValues(context, resId, readAgain);
 	}
 
 	/**
