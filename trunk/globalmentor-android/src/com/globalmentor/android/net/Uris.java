@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2011-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,4 +62,14 @@ public class Uris
 		}
 	}
 
+	/**
+	 * Converts an Android URI to a Java URI.
+	 * @param uri The Android URI to convert.
+	 * @return A Java URI for the given Android URI.
+	 * @throws IllegalArgumentException if the given Android URI does not represent a valid URI.
+	 */
+	public static URI toURI(final Uri uri)
+	{
+		return URI.create(uri.toString());
+	}
 }
