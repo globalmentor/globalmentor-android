@@ -32,6 +32,16 @@ public class Uris
 {
 
 	/**
+	 * Creates an Android URI from the given Java URI.
+	 * @param uri The Java URI instance.
+	 * @return A new Android URI instance equivalent to the Java URI instance.
+	 */
+	public static Uri createUri(final URI uri)
+	{
+		return Uri.parse(uri.toASCIIString());
+	}
+
+	/**
 	 * Creates a Java file from an Android URI.
 	 * @param uri The URI to convert.
 	 * @return The URI converted to a file.
