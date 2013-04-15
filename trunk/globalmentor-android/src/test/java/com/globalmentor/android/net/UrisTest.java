@@ -62,7 +62,7 @@ public class UrisTest extends AbstractTest
 	{
 		final Uri androidUriFromFile = Uri.fromFile(tempFile); //create an Android Uri directly from a file
 		final URI javaURIFromFile = Files.toURI(tempFile); //create a Java URI directly from a file
-		final Uri androidUrifromJavaURIFomFile = Uris.createUri(javaURIFromFile); //create an Android Uri from the Java URI
+		final Uri androidUriFromJavaURIFromFile = Uris.createUri(javaURIFromFile); //create an Android Uri from the Java URI
 		//assertEquals(androidUriFromFile, androidUrifromJavaURIFomFile);
 	}
 

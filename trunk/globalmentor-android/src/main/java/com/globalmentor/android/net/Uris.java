@@ -16,29 +16,63 @@
 
 package com.globalmentor.android.net;
 
+import static com.globalmentor.net.URIs.FILE_SCHEME;
+import static com.globalmentor.net.URIs.FILE_URI_PATH_ROOT_PREFIX;
+
 import java.io.File;
 import java.net.*;
+
+import com.globalmentor.io.Files;
+import com.globalmentor.java.CharSequences;
+import com.globalmentor.net.URIs;
 
 import android.net.Uri;
 
 /**
- * Utilities for working with Android {@link Uri}s.
- * 
+ * Utilities for working with Android {@link Uri}s. URI
+ * <p>
+ * Note that Android uses the file {@link Uri} form <code>file:///mnt/sdcard/...</code>, which is correct, instead of the Java {@link URI} form
+ * <code>file:/mnt/sdcard/...</code>, which is incorrect.
+ * </p>
  * @author Garret Wilson
- * 
  * @see Uri
+ * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</p>
  */
 public class Uris
 {
 
 	/**
 	 * Creates an Android URI from the given Java URI.
+	 * <p>
+	 * This method converts from the Java <code>file:/mnt/sdcard/...</code> form to the Android <code>file:///mnt/sdcard/...</code> form.
+	 * </p>
 	 * @param uri The Java URI instance.
 	 * @return A new Android URI instance equivalent to the Java URI instance.
 	 */
 	public static Uri createUri(final URI uri)
 	{
-		return Uri.parse(uri.toASCIIString());
+		String uriString = uri.toASCIIString(); //get the string version of the URI
+		if(FILE_SCHEME.equals(uri.getScheme()) && URIs.isAbsolutePath(uri)) //if this was a file URI with an absolute path
+		{
+			final StringBuilder uriStringBuilder = new StringBuilder(uriString);
+			uriStringBuilder.insert(FILE_SCHEME.length() + 1, FILE_URI_PATH_ROOT_PREFIX); //insert the special file URI prefix that Android expects
+			uriString = uriStringBuilder.toString();
+
+		}
+		return Uri.parse(uriString);
+	}
+
+	/**
+	 * Creates an Android URI from a file.
+	 * <p>
+	 * This ensures that the Android <code>file:///mnt/sdcard/...</code> form is used.
+	 * </p>
+	 * @param file The file which should be turned into an Android URI.
+	 * @return An Android URI representation of the file.
+	 */
+	public static Uri fromFile(final File file)
+	{
+		return createUri(Files.toURI(file));
 	}
 
 	/**
@@ -50,7 +84,7 @@ public class Uris
 	 */
 	public static File toFile(final Uri uri)
 	{
-		return new File(URI.create(uri.toString()));
+		return new File(toURI(uri));
 	}
 
 	/**
@@ -74,12 +108,23 @@ public class Uris
 
 	/**
 	 * Converts an Android URI to a Java URI.
+	 * <p>
+	 * This method converts from the Android <code>file:///mnt/sdcard/...</code> form to the Java <code>file:/mnt/sdcard/...</code> form.
+	 * </p>
 	 * @param uri The Android URI to convert.
 	 * @return A Java URI for the given Android URI.
 	 * @throws IllegalArgumentException if the given Android URI does not represent a valid URI.
 	 */
 	public static URI toURI(final Uri uri)
 	{
+		String uriString = uri.toString(); //get the string version of the URI
+		if(FILE_SCHEME.equals(uri.getScheme()) && CharSequences.equals(FILE_URI_PATH_ROOT_PREFIX, uriString, FILE_SCHEME.length() + 1)) //if this was a file URI starting with two forward slashes
+		{
+			final StringBuilder uriStringBuilder = new StringBuilder(uriString);
+			uriStringBuilder.delete(FILE_SCHEME.length() + 1, FILE_SCHEME.length() + 1 + FILE_URI_PATH_ROOT_PREFIX.length()); //remove the Android file URI prefix
+			uriString = uriStringBuilder.toString();
+
+		}
 		return URI.create(uri.toString());
 	}
 }
