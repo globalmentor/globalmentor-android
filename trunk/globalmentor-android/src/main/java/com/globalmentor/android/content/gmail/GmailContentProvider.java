@@ -20,7 +20,6 @@ import static android.content.pm.PackageManager.*;
 import static android.content.pm.PermissionInfo.*;
 import static com.globalmentor.android.content.ContentProviders.*;
 import static com.globalmentor.net.URIs.*;
-
 import android.accounts.*;
 import android.content.Context;
 import android.content.pm.*;
@@ -38,6 +37,9 @@ import android.text.TextUtils;
  * 
  * @author Garret Wilson
  * @see <a href="https://developers.google.com/gmail/android/">Android Gmail</a>
+ * @see <a
+ *      href="https://developers.google.com/gmail/android/com/google/android/gm/contentprovider/GmailContract.Labels.LabelCanonicalNames">GmailContract.Labels
+ *      .LabelCanonicalNames/a>
  */
 public class GmailContentProvider
 {
@@ -65,10 +67,13 @@ public class GmailContentProvider
 
 	//label canonical names
 
-	/** Canonical name for the Inbox label. */
+	/** Canonical name for the Inbox label; may not exist. */
 	public static final String LABEL_CANONICAL_NAME_INBOX = "^i";
 
-	/** Canonical name for the Priority Inbox label. */
+	/** Canonical name for the Primary Inbox label; may not exist. */
+	public static final String LABEL_CANONICAL_NAME_PRIMARY_INBOX = "^sq_ig_i_personal";
+
+	/** Canonical name for the Priority Inbox label; may not exist. */
 	public static final String LABEL_CANONICAL_NAME_PRIORITY_INBOX = "^iim";
 
 	/** Canonical name for the Starred label. */
@@ -229,6 +234,20 @@ public class GmailContentProvider
 		}
 		while(labelCursor.moveToNext())
 		{
+			//Log.d(GmailContentProvider.class.getName(), "label: " + labelCursor.getString(canonicalNameIndex));
+			/*As of 2014-06-01, the following labels are being returned:
+			* ^sq_ig_i_personal
+			* ^sq_ig_i_social
+			* ^sq_ig_i_promo
+			* ^t
+			* ^io_im
+			* ^f
+			* ^^out
+			* ^r
+			* ^all
+			* ^s
+			* ^k 
+			 */
 			if(labelCanonicalName.equals(labelCursor.getString(canonicalNameIndex)))
 			{
 				return;
