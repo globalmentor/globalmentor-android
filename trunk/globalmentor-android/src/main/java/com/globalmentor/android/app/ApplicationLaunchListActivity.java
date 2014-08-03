@@ -30,19 +30,14 @@ import android.content.pm.ApplicationInfo;
  * 
  * @see <a href="http://xjaphx.wordpress.com/2011/06/12/create-application-launcher-as-a-list/">Create Application Launcher as a list</a>
  */
-public class ApplicationLaunchListActivity extends ApplicationListActivity
-{
+public class ApplicationLaunchListActivity extends ApplicationListActivity {
 
 	@Override
-	public void onItemClick(final int position, final long id, final ApplicationInfo item)
-	{
+	public void onItemClick(final int position, final long id, final ApplicationInfo item) {
 		super.onItemClick(position, id, item);
-		try
-		{
+		try {
 			Applications.launch(this, item);
-		}
-		catch(final Throwable throwable)
-		{
+		} catch(final Throwable throwable) {
 			Notifications.error(this, throwable);
 		}
 	}

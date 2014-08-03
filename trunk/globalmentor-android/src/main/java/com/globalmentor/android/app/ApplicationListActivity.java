@@ -40,12 +40,10 @@ import android.widget.*;
  * 
  * @see <a href="http://xjaphx.wordpress.com/2011/06/12/create-application-launcher-as-a-list/">Create Application Launcher as a list</a>
  */
-public class ApplicationListActivity extends AbstractListActivity<ApplicationInfo>
-{
+public class ApplicationListActivity extends AbstractListActivity<ApplicationInfo> {
 
 	@Override
-	protected ListAdapter createListAdapter()
-	{
+	protected ListAdapter createListAdapter() {
 		final PackageManager packageManager = getPackageManager(); //get a list of applications
 		final List<ApplicationInfo> applications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA); //show the applications using an adapter
 		return new ApplicationInfoListAdapter(this, applications);

@@ -24,16 +24,14 @@ import android.net.*;
  * 
  * @author Garret Wilson
  */
-public class Network
-{
+public class Network {
 
 	/**
 	 * Determines whether the network is connected and fully usable.
 	 * @param context The current context.
 	 * @return <code>true</code> the network is connected and fully usable.
 	 */
-	public static boolean isConnected(final Context context)
-	{
+	public static boolean isConnected(final Context context) {
 		final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo(); //get the info of the active network
 		return networkInfo != null && networkInfo.isConnected(); //check for a connection (the network info may be null if the device is in airplane mode; see http://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-timeouts/4009133#4009133 )

@@ -50,15 +50,13 @@ import android.view.*;
  * @see <a href="http://www.codeshogun.com/blog/2009/04/16/how-to-implement-swipe-action-in-android/">How to implement Swipe action in Android</a>
  * @see <a href="http://stackoverflow.com/questions/937313/android-basic-gesture-detection">Android - basic gesture detection</a>
  */
-public class ImageSlideView extends View
-{
+public class ImageSlideView extends View {
 
 	/** The axis on which sliding should occur. */
 	private Axis slideAxis;
 
 	/** @return The axis on which sliding should occur. */
-	public Axis getSlideAxis()
-	{
+	public Axis getSlideAxis() {
 		return slideAxis;
 	}
 
@@ -67,8 +65,7 @@ public class ImageSlideView extends View
 	 * @param slideAxis The axis on which sliding should occur.
 	 * @throws NullPointerException if the given axis is <code>null</code>.
 	 */
-	public void setSlideAxis(final Axis slideAxis)
-	{
+	public void setSlideAxis(final Axis slideAxis) {
 		this.slideAxis = checkInstance(slideAxis);
 		gestureListener.setAxes(slideAxis); //inform the gesture listener of the new slide axis
 	}
@@ -113,11 +110,9 @@ public class ImageSlideView extends View
 	 * </p>
 	 * @return The image currently being displayed, or <code>null</code> if no image is being displayed.
 	 */
-	public Bitmap getImage()
-	{
+	public Bitmap getImage() {
 		checkMainThread();
-		if(images.isEmpty()) //if there are no images
-		{
+		if(images.isEmpty()) { //if there are no images
 			return null;
 		}
 		return images.get(imageOrder.get(imageIndex)); //get the ID of the selected image and return the bitmap for that image
@@ -130,13 +125,11 @@ public class ImageSlideView extends View
 	 * </p>
 	 * @see Bitmap#recycle()
 	 */
-	public void clearImages()
-	{
+	public void clearImages() {
 		checkMainThread();
 		//recycle all the existing images so they can be cleaned up as soon as possible; see http://code.google.com/p/android/issues/detail?id=8488
 		final Iterator<Map.Entry<String, Bitmap>> idImageIterator = images.entrySet().iterator();
-		while(idImageIterator.hasNext())
-		{
+		while(idImageIterator.hasNext()) {
 			idImageIterator.next().getValue().recycle(); //recycle the image
 			idImageIterator.remove(); //remove the image entry from the map
 		}
@@ -151,8 +144,7 @@ public class ImageSlideView extends View
 	 * </p>
 	 * @param images The images to be displayed, along with their IDs.
 	 */
-	public void setImages(final Map<String, Bitmap> images)
-	{
+	public void setImages(final Map<String, Bitmap> images) {
 		setImages(images, 0);
 	}
 
@@ -167,10 +159,8 @@ public class ImageSlideView extends View
 	 * @throws IllegalArgumentException if an image with one of the given IDs already exists.
 	 * @throws IndexOutOfBoundsException if the given index refers to a location not in the collection, if the collection is non-empty.
 	 */
-	public void setImages(final Map<String, Bitmap> images, final int index)
-	{
-		if(!images.isEmpty())
-		{
+	public void setImages(final Map<String, Bitmap> images, final int index) {
+		if(!images.isEmpty()) {
 			checkIndexBounds(index, images.size());
 		}
 		checkMainThread();
@@ -188,11 +178,9 @@ public class ImageSlideView extends View
 	 * @throws NullPointerException if a given image ID and/or image is <code>null</code>.
 	 * @throws IllegalArgumentException if an image with one of the given IDs already exists.
 	 */
-	public void addImages(final Map<String, Bitmap> images)
-	{
+	public void addImages(final Map<String, Bitmap> images) {
 		checkMainThread();
-		for(final Map.Entry<String, Bitmap> imageEntry : images.entrySet()) //add the images individually
-		{
+		for(final Map.Entry<String, Bitmap> imageEntry : images.entrySet()) { //add the images individually
 			addImage(imageEntry.getKey(), imageEntry.getValue());
 		}
 	}
@@ -207,11 +195,9 @@ public class ImageSlideView extends View
 	 * @throws NullPointerException if the given image ID and/or image is <code>null</code>.
 	 * @throws IllegalArgumentException if an image with the given ID already exists.
 	 */
-	public void addImage(final String imageID, final Bitmap image)
-	{
+	public void addImage(final String imageID, final Bitmap image) {
 		checkMainThread();
-		if(images.containsKey(checkInstance(imageID)))
-		{
+		if(images.containsKey(checkInstance(imageID))) {
 			throw new IllegalArgumentException("Image with ID " + imageID + " already exists.");
 		}
 		images.put(imageID, checkInstance(image));
@@ -227,16 +213,13 @@ public class ImageSlideView extends View
 	 * @param imageID The ID of the image to remove.
 	 * @throws NullPointerException if the given image ID is <code>null</code>.
 	 */
-	public void removeImage(final String imageID)
-	{
+	public void removeImage(final String imageID) {
 		checkMainThread();
 		final Bitmap bitmap = images.remove(imageID); //remove the image and get the bitmap for it
-		if(bitmap != null) //if we knew about the image
-		{
+		if(bitmap != null) { //if we knew about the image
 			bitmap.recycle(); //recycle the image; see http://code.google.com/p/android/issues/detail?id=8488
 			imageOrder.remove(imageID); //remove the image from the order list
-			if(imageIndex > imageOrder.size() - 1) //if our image index is now invalid
-			{
+			if(imageIndex > imageOrder.size() - 1) { //if our image index is now invalid
 				imageIndex = imageOrder.isEmpty() ? 0 : imageOrder.size() - 1; //we'll show the last image (unless there are no images)
 				invalidate(); //because we changed the image index, invalidate the view
 			}
@@ -255,16 +238,11 @@ public class ImageSlideView extends View
 	 * @throws IndexOutOfBoundsException if the given index refers to a location not in the collection, if the collection is non-empty.
 	 * @see #recalculateImage()
 	 */
-	public void goImage(final int imageIndex)
-	{
+	public void goImage(final int imageIndex) {
 		checkMainThread();
-		if(images.isEmpty())
-		{
+		if(images.isEmpty()) {
 			checkArgument(imageIndex == 0); //if there are no images, only allow the first index
-		}
-		else
-		//if there are images
-		{
+		} else { //if there are images
 			checkIndexBounds(imageIndex, images.size());
 		}
 		this.imageIndex = imageIndex; //change the index
@@ -281,12 +259,10 @@ public class ImageSlideView extends View
 	 * @return The index of the image, or -1 if there is no image with the given ID.
 	 * @throws NullPointerException if the given image ID is <code>null</code>.
 	 */
-	public int goImage(final String imageID)
-	{
+	public int goImage(final String imageID) {
 		checkMainThread();
 		final int imageIndex = imageOrder.indexOf(checkInstance(imageID));
-		if(imageIndex >= 0) //if there is such an image ID
-		{
+		if(imageIndex >= 0) { //if there is such an image ID
 			goImage(imageIndex); //go to that index
 		}
 		return imageIndex; //return the index of the image (if any)
@@ -298,8 +274,7 @@ public class ImageSlideView extends View
 	 * This method must be called from the main thread.
 	 * </p>
 	 */
-	public void goPreviousImage()
-	{
+	public void goPreviousImage() {
 		goImage(imageIndex > 0 ? imageIndex - 1 : imageOrder.size() - 1); //go to the previous image, wrapping around if needed
 	}
 
@@ -309,8 +284,7 @@ public class ImageSlideView extends View
 	 * This method must be called from the main thread.
 	 * </p>
 	 */
-	public void goNextImage()
-	{
+	public void goNextImage() {
 		goImage(imageIndex < imageOrder.size() - 1 ? imageIndex + 1 : 0); //go to the next image, wrapping around if needed
 	}
 
@@ -321,16 +295,13 @@ public class ImageSlideView extends View
 	 * </p>
 	 * @see #resetImagePosition()
 	 */
-	protected void recalculateImage()
-	{
+	protected void recalculateImage() {
 		originMatrix.reset(); //reset the image matrix
 		final float viewWidth = getWidth(); //get the current view dimensions; use floats because we'll be doing calculations
 		final float viewHeight = getHeight();
-		if(viewWidth > 0 && viewHeight > 0) //if the view has been resized
-		{
+		if(viewWidth > 0 && viewHeight > 0) { //if the view has been resized
 			final Bitmap image = getImage(); //get the current image, if any
-			if(image != null) //if we are showing an image
-			{
+			if(image != null) { //if we are showing an image
 				final float imageWidth = image.getWidth();
 				final float imageHeight = image.getHeight();
 				final float widthRatio = imageWidth / viewWidth;
@@ -348,14 +319,12 @@ public class ImageSlideView extends View
 	}
 
 	/** Resets the current image by rescaling and repositioning the image to its initial location. */
-	protected void resetImagePosition()
-	{
+	protected void resetImagePosition() {
 		currentMatrix.set(originMatrix); //reset the translate matrix to the initial position
 		invalidate(); //invalidate the view so that the image will be shown/repainted
 	}
 
-	public ImageSlideView(Context context)
-	{
+	public ImageSlideView(Context context) {
 		super(context);
 		slideAxis = Axis.HORIZONTAL; //default to sliding horizontally
 		gestureListener = new GestureListener(context);
@@ -368,8 +337,7 @@ public class ImageSlideView extends View
 	 * {@inheritDoc} This version recalculates the position and size of the image to fit the new view size.
 	 */
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh)
-	{
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		recalculateImage(); //recalculate the size and position of the image
 	}
@@ -379,8 +347,7 @@ public class ImageSlideView extends View
 	 * @param dx The relative horizontal position of the image.
 	 * @param dy The relative vertical position of the image.
 	 */
-	public void moveImage(float dx, float dy)
-	{
+	public void moveImage(float dx, float dy) {
 		currentMatrix.postTranslate(dx, dy);
 		invalidate();
 	}
@@ -394,8 +361,7 @@ public class ImageSlideView extends View
 	 * @param velocityY The vertical velocity, or 0 if no sliding should occur vertically.
 	 * @see #getSlideAxis()
 	 */
-	public void slideImage(final float velocityX, final float velocityY)
-	{
+	public void slideImage(final float velocityX, final float velocityY) {
 		final int viewWidth = getWidth();
 		final int viewHeight = getHeight();
 		final Matrix startMatrix = new Matrix(currentMatrix); //start sliding from our current position
@@ -406,38 +372,25 @@ public class ImageSlideView extends View
 		final float[] originValues = new float[9];
 		originMatrix.getValues(originValues); //get the original position values of the image
 		final float endX; //determine where we should end, based upon the velocity directions
-		if(velocityX < 0) //if we are sliding left
-		{
+		if(velocityX < 0) { //if we are sliding left
 			endX = originValues[Matrix.MTRANS_X] - viewWidth; //we'll slide a whole view left
-		}
-		else if(velocityX > 0) //if we are sliding right
-		{
+		} else if(velocityX > 0) { //if we are sliding right
 			endX = originValues[Matrix.MTRANS_X] + viewWidth; //we'll slide a whole view right
-		}
-		else
-		//if we are not sliding horizontally
-		{
+		} else { //if we are not sliding horizontally
 			endX = startX; //no need to slide at all
 		}
 		final float endY; //determine where we should end, based upon the velocity directions
-		if(velocityY < 0) //if we are sliding up
-		{
+		if(velocityY < 0) { //if we are sliding up
 			endY = originValues[Matrix.MTRANS_Y] - viewHeight; //we'll slide a whole view up
-		}
-		else if(velocityY > 0) //if we are sliding down
-		{
+		} else if(velocityY > 0) { //if we are sliding down
 			endY = originValues[Matrix.MTRANS_Y] + viewHeight; //we'll slide a whole view down
-		}
-		else
-		//if we are not sliding vertically
-		{
+		} else { //if we are not sliding vertically
 			endY = startY; //no need to slide at all
 		}
-		post(new Runnable() //post an event to start sliding
-		{
+		post(new Runnable() { //post an event to start sliding
+
 			@Override
-			public void run()
-			{
+			public void run() {
 				slideAnimateStep(System.currentTimeMillis(), startMatrix, startX, startY, endX, endY, velocityX, velocityY);
 			}
 		});
@@ -455,33 +408,26 @@ public class ImageSlideView extends View
 	 * @param velocityY The vertical velocity, or 0 if no sliding should occur vertically.
 	 */
 	private void slideAnimateStep(final long startTime, final Matrix startMatrix, final float startX, final float startY, final float endX, final float endY,
-			final float velocityX, final float velocityY)
-	{
+			final float velocityX, final float velocityY) {
 		final long currentTime = System.currentTimeMillis();
 		final long timePassed = currentTime - startTime; //see how much time has passed since we started
 		final float distanceX = timePassed * (velocityX / 1000); //see how much distance we should cover in that time
 		final float distanceY = timePassed * (velocityY / 1000); //see how much distance we should cover in that time
 		currentMatrix.set(startMatrix); //reset the current position back to the starting position
 		moveImage(distanceX, 0); //translate the image to its current animation position
-		if(startX + distanceX < endX || startY + distanceY < endY) //if we haven't finished the animation
-		{
+		if(startX + distanceX < endX || startY + distanceY < endY) { //if we haven't finished the animation
 			final long delayX = (long)(1000 / velocityX); //see how long we should delay before a single pixel would be traversed at the requested velocity;
 			final long delayY = (long)(1000 / velocityY); //there is no need to continue animating until that point
-			postDelayed(new Runnable() //post another animation step
-					{
+			postDelayed(new Runnable() { //post another animation step
+
 						@Override
-						public void run()
-						{
+						public void run() {
 							slideAnimateStep(startTime, startMatrix, startX, startY, endX, endY, velocityX, velocityY);
 						}
 					}, Math.min(delayX, delayY)); //sleep until it's time for another animation step
-		}
-		else
-		//when animation is finished
-		{
+		} else { //when animation is finished
 			final float velocity1, velocity2; //give precedence to the appropriate axis
-			switch(getSlideAxis())
-			{
+			switch(getSlideAxis()) {
 				case HORIZONTAL:
 					velocity1 = velocityX;
 					velocity2 = velocityY;
@@ -493,12 +439,9 @@ public class ImageSlideView extends View
 				default:
 					throw new AssertionError("Unrecognized axis: " + getSlideAxis());
 			}
-			if(velocity1 < 0 || velocity2 < 0) //if sliding backwards
-			{
+			if(velocity1 < 0 || velocity2 < 0) { //if sliding backwards
 				goNextImage(); //go to the next image
-			}
-			else if(velocity1 > 0 || velocity2 > 0) //if sliding forwards
-			{
+			} else if(velocity1 > 0 || velocity2 > 0) { //if sliding forwards
 				goPreviousImage(); //go to the previous image
 			}
 		}
@@ -508,8 +451,7 @@ public class ImageSlideView extends View
 	 * {@inheritDoc} This version delegates touch event handling to the gesture detector.
 	 */
 	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
+	public boolean onTouchEvent(MotionEvent event) {
 		return gestureDetector.onTouchEvent(event);
 	}
 
@@ -517,12 +459,10 @@ public class ImageSlideView extends View
 	 * {@inheritDoc} This version draws the image as appropriate.
 	 */
 	@Override
-	protected void onDraw(Canvas canvas)
-	{
+	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		final Bitmap currentImage = getImage(); //get our current image, if any 
-		if(currentImage != null) //if we have an image
-		{
+		if(currentImage != null) { //if we have an image
 			canvas.drawBitmap(currentImage, currentMatrix, null); //draw the image using our current scale/translate matrix
 		}
 	}
@@ -536,8 +476,7 @@ public class ImageSlideView extends View
 	 * @see <a href="http://stackoverflow.com/questions/937313/android-basic-gesture-detection">Android - basic gesture detection</a>
 	 * @see <a href="http://stackoverflow.com/questions/2089552/android-how-to-detect-when-a-scroll-has-ended">Android: How to detect when a scroll has ended</a>
 	 */
-	private class GestureListener extends PageFlingListener implements OnTouchListener
-	{
+	private class GestureListener extends PageFlingListener implements OnTouchListener {
 
 		/** Whether scrolling is currently occurring. */
 		private boolean isScrolling = false;
@@ -547,8 +486,7 @@ public class ImageSlideView extends View
 		 * @param context The current context.
 		 * @throws NullPointerException if the given context is <code>null</code>.
 		 */
-		public GestureListener(final Context context)
-		{
+		public GestureListener(final Context context) {
 			super(context);
 		}
 
@@ -556,8 +494,7 @@ public class ImageSlideView extends View
 		 * {@inheritDoc} This version returns <code>true</code> so that scolling events will be caught.
 		 */
 		@Override
-		public boolean onDown(MotionEvent e)
-		{
+		public boolean onDown(MotionEvent e) {
 			return true;
 		}
 
@@ -565,8 +502,7 @@ public class ImageSlideView extends View
 		 * {@inheritDoc} This version moves the image on the slide axis in response to a user scroll.
 		 */
 		@Override
-		public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY)
-		{
+		public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
 			isScrolling = true; //make a note that scrolling has started
 			final Axis slideAxis = getSlideAxis();
 			moveImage(slideAxis == Axis.HORIZONTAL ? -distanceX : 0, slideAxis == Axis.VERTICAL ? -distanceY : 0); //move the image, but only along the sliding axis
@@ -578,8 +514,7 @@ public class ImageSlideView extends View
 		 * {@inheritDoc} This version slides the image in the appropriate direction.
 		 */
 		@Override
-		public boolean onVerifiedFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-		{
+		public boolean onVerifiedFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			currentMatrix.set(scrollMatrix); //reset the image back to the location of the last scroll; otherwise the touch-up will reset the image 
 			invalidate(); //invalidate the view so that the image will be shown/repainted
 			slideImage(velocityX, velocityY); //slide the image at the appropriate velocity
@@ -592,16 +527,12 @@ public class ImageSlideView extends View
 		 *      ended</a>
 		 */
 		@Override
-		public boolean onTouch(final View v, final MotionEvent event)
-		{
-			if(onTouchEvent(event)) //process the touch event normally if needed
-			{
+		public boolean onTouch(final View v, final MotionEvent event) {
+			if(onTouchEvent(event)) { //process the touch event normally if needed
 				return true;
 			}
-			if(event.getAction() == MotionEvent.ACTION_UP) //if this is a touch up
-			{
-				if(isScrolling) //if we had been scrolling
-				{
+			if(event.getAction() == MotionEvent.ACTION_UP) { //if this is a touch up
+				if(isScrolling) { //if we had been scrolling
 					isScrolling = false; //scrolling has now ended
 					resetImagePosition(); //reset the image to its original position
 				}

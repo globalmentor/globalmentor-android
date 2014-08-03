@@ -29,21 +29,18 @@ import com.globalmentor.model.PollStateManager;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractPollingService extends AbstractWorkerService
-{
+public abstract class AbstractPollingService extends AbstractWorkerService {
 
 	/** The class managing the frequency between polls. */
 	private PollStateManager<Long> pollFrequencyManager;
 
 	/** @return The class managing the frequency between polls. */
-	protected PollStateManager<Long> getPollFrequencyManager()
-	{
+	protected PollStateManager<Long> getPollFrequencyManager() {
 		return pollFrequencyManager;
 	}
 
 	@Override
-	public void onCreate()
-	{
+	public void onCreate() {
 		super.onCreate();
 		pollFrequencyManager = new PollStateManager<Long>();
 	}
@@ -53,26 +50,18 @@ public abstract class AbstractPollingService extends AbstractWorkerService
 	 * @see #poll()
 	 */
 	@Override
-	protected final void work()
-	{
+	protected final void work() {
 		boolean poll = true;
-		do
-		{
-			try
-			{
+		do {
+			try {
 				poll();
 				Thread.sleep(getPollFrequencyManager().pollState()); //wait for a while
-			}
-			catch(final InterruptedException interruptedException)
-			{
+			} catch(final InterruptedException interruptedException) {
 				poll = false;
-			}
-			catch(final Exception exception)
-			{
+			} catch(final Exception exception) {
 				Log.e(getLogTag(), "Error during polling.", exception);
 			}
-		}
-		while(poll);
+		} while(poll);
 	}
 
 	/** Performs polling. */

@@ -33,18 +33,15 @@ import android.util.Log;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractWorkerService extends AbstractBaseService
-{
+public abstract class AbstractWorkerService extends AbstractBaseService {
 
 	/** The thread that does the actual working. */
 	private Thread workerThread = null;
 
 	@Override
-	public int onStartCommand(final Intent intent, final int flags, final int startId)
-	{
+	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		super.onStartCommand(intent, flags, startId);
-		if(workerThread == null) //if we haven't started the worker thread, yet
-		{
+		if(workerThread == null) { //if we haven't started the worker thread, yet
 			workerThread = new Thread(new Worker(), getClass().getSimpleName() + Worker.class.getSimpleName());
 			workerThread.start(); //start the worker in a separate thread
 		}
@@ -52,10 +49,8 @@ public abstract class AbstractWorkerService extends AbstractBaseService
 	}
 
 	@Override
-	public void onDestroy()
-	{
-		if(workerThread != null)
-		{
+	public void onDestroy() {
+		if(workerThread != null) {
 			workerThread.interrupt(); //interrupt the worker so that it can end
 		}
 		super.onDestroy();
@@ -73,17 +68,13 @@ public abstract class AbstractWorkerService extends AbstractBaseService
 	 * 
 	 * @author Garret Wilson
 	 */
-	private class Worker implements Runnable
-	{
+	private class Worker implements Runnable {
+
 		@Override
-		public void run()
-		{
-			try
-			{
+		public void run() {
+			try {
 				work();
-			}
-			catch(final Exception exception)
-			{
+			} catch(final Exception exception) {
 				Log.e(getLogTag(), "Error in worker thread.", exception);
 			}
 		}

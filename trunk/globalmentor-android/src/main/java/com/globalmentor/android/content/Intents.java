@@ -21,8 +21,7 @@ package com.globalmentor.android.content;
  * 
  * @author Garret Wilson
  */
-public class Intents
-{
+public class Intents {
 
 	/**
 	 * Creates a new ID for an action in the form <code>com.example.package.intent.action.SIMPLE_NAME</code>. By convention the provided name is in uppercase.
@@ -31,8 +30,7 @@ public class Intents
 	 * @return A new ID for an action.
 	 * @throws NullPointerException if the given class and/or name is <code>null</code>.
 	 */
-	public static String createAction(final Class<?> c, final String simpleName)
-	{
+	public static String createAction(final Class<?> c, final String simpleName) {
 		return createAction(c.getPackage(), simpleName);
 	}
 
@@ -43,8 +41,7 @@ public class Intents
 	 * @return A new ID for an action.
 	 * @throws NullPointerException if the given package and/or name is <code>null</code>.
 	 */
-	public static String createAction(final Package p, final String simpleName)
-	{
+	public static String createAction(final Package p, final String simpleName) {
 		return p.getName() + ".intent.action." + simpleName;
 	}
 

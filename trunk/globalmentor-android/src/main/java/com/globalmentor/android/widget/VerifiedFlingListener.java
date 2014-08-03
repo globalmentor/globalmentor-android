@@ -35,15 +35,13 @@ import android.view.*;
  * @see <a href="http://www.codeshogun.com/blog/2009/04/16/how-to-implement-swipe-action-in-android/">How to implement Swipe action in Android</a>
  * @see <a href="http://stackoverflow.com/questions/937313/android-basic-gesture-detection">Android - basic gesture detection</a>
  */
-public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListener
-{
+public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListener {
 
 	/** The current context. */
 	private final Context context;
 
 	/** @return The current context. */
-	protected Context getContext()
-	{
+	protected Context getContext() {
 		return context;
 	}
 
@@ -51,8 +49,7 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	private Set<Axis> flingAxes = unmodifiableSet(EnumSet.allOf(Axis.class));
 
 	/** @return The supported axes for flinging; a fling will only be verified if it occurs on one of these axes. */
-	public Set<Axis> getFlingAxes()
-	{
+	public Set<Axis> getFlingAxes() {
 		return flingAxes;
 	}
 
@@ -61,8 +58,7 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	 * @param axes The supported axes; a fling will only be verified if it occurs on one of these axes.
 	 * @throws NullPointerException if the given collection is <code>null</code>.
 	 */
-	public void setFlingAxes(final Collection<Axis> axes)
-	{
+	public void setFlingAxes(final Collection<Axis> axes) {
 		this.flingAxes = unmodifiableSet(EnumSet.copyOf(axes));
 	}
 
@@ -70,8 +66,7 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	 * Sets the supported axes.
 	 * @param axes The supported axes; a fling will only be verified if it occurs on one of these axes.
 	 */
-	public void setAxes(final Axis... axes)
-	{
+	public void setAxes(final Axis... axes) {
 		setFlingAxes(Arrays.asList(axes));
 	}
 
@@ -80,8 +75,7 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	 * @param context The current context.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public VerifiedFlingListener(final Context context)
-	{
+	public VerifiedFlingListener(final Context context) {
 		this.context = checkInstance(context);
 	}
 
@@ -95,27 +89,19 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	 * @see #onVerifiedFling(MotionEvent, MotionEvent, float, float)
 	 */
 	@Override
-	public boolean onFling(final MotionEvent e1, final MotionEvent e2, float velocityX, float velocityY)
-	{
-		if(e1 == null || e2 == null) //if one of the motion events is missing (see http://stackoverflow.com/questions/937313/android-basic-gesture-detection/5641723#5641723 )
-		{
-			return false;	//ignore the fling
+	public boolean onFling(final MotionEvent e1, final MotionEvent e2, float velocityX, float velocityY) {
+		if(e1 == null || e2 == null) { //if one of the motion events is missing (see http://stackoverflow.com/questions/937313/android-basic-gesture-detection/5641723#5641723 )
+			return false; //ignore the fling
 		}
-		if(!isFlingVerified(Axis.HORIZONTAL, e2.getX() - e1.getX(), velocityX)) //verify the horizontal fling
-		{
+		if(!isFlingVerified(Axis.HORIZONTAL, e2.getX() - e1.getX(), velocityX)) { //verify the horizontal fling
 			velocityX = 0;
 		}
-		if(!isFlingVerified(Axis.VERTICAL, e2.getY() - e1.getY(), velocityY)) //verify the vertical fling
-		{
+		if(!isFlingVerified(Axis.VERTICAL, e2.getY() - e1.getY(), velocityY)) { //verify the vertical fling
 			velocityY = 0;
 		}
-		if(velocityX != 0 || velocityY != 0) //if a fling was verified in at least one direction
-		{
+		if(velocityX != 0 || velocityY != 0) { //if a fling was verified in at least one direction
 			return onVerifiedFling(e1, e2, velocityX, velocityY);
-		}
-		else
-		//if the fling thresholds were not reached
-		{
+		} else { //if the fling thresholds were not reached
 			return false; //ignore the event
 		}
 	}
@@ -129,16 +115,13 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	 * @see ViewConfiguration#getScaledMinimumFlingVelocity()
 	 * @see ViewConfiguration#getScaledMaximumFlingVelocity()
 	 */
-	public boolean isFlingVerified(final Axis axis, final float distance, float velocity)
-	{
-		if(!getFlingAxes().contains(axis)) //if this isn't a supported axis
-		{
+	public boolean isFlingVerified(final Axis axis, final float distance, float velocity) {
+		if(!getFlingAxes().contains(axis)) { //if this isn't a supported axis
 			return false;
 		}
 		final ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
 		final float absoluteVelocity = Math.abs(velocity);
-		if(absoluteVelocity <= viewConfiguration.getScaledMinimumFlingVelocity() || absoluteVelocity > viewConfiguration.getScaledMaximumFlingVelocity())
-		{
+		if(absoluteVelocity <= viewConfiguration.getScaledMinimumFlingVelocity() || absoluteVelocity > viewConfiguration.getScaledMaximumFlingVelocity()) {
 			return false;
 		}
 		return true;
@@ -152,8 +135,7 @@ public class VerifiedFlingListener extends GestureDetector.SimpleOnGestureListen
 	 * @param velocityY The vertical velocity, or 0 if a page fling was not verified vertically.
 	 * @return <code>true</code> if the event was consumed.
 	 */
-	public boolean onVerifiedFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY)
-	{
+	public boolean onVerifiedFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
 		return false;
 	}
 }

@@ -31,16 +31,14 @@ import android.view.*;
  * @see <a href="http://www.codeshogun.com/blog/2009/04/16/how-to-implement-swipe-action-in-android/">How to implement Swipe action in Android</a>
  * @see <a href="http://stackoverflow.com/questions/937313/android-basic-gesture-detection">Android - basic gesture detection</a>
  */
-public class PageFlingListener extends VerifiedFlingListener
-{
+public class PageFlingListener extends VerifiedFlingListener {
 
 	/**
 	 * Context constructor.
 	 * @param context The current context.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public PageFlingListener(final Context context)
-	{
+	public PageFlingListener(final Context context) {
 		super(context);
 	}
 
@@ -52,15 +50,12 @@ public class PageFlingListener extends VerifiedFlingListener
 	 * @see ViewConfiguration#getScaledPagingTouchSlop()
 	 */
 	@Override
-	public boolean isFlingVerified(final Axis axis, final float distance, float velocity)
-	{
-		if(!super.isFlingVerified(axis, distance, velocity)) //make sure the fling passes the default tests
-		{
+	public boolean isFlingVerified(final Axis axis, final float distance, float velocity) {
+		if(!super.isFlingVerified(axis, distance, velocity)) { //make sure the fling passes the default tests
 			return false;
 		}
 		final ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
-		if(Math.abs(distance) <= viewConfiguration.getScaledPagingTouchSlop()) //make sure the fling is sufficient for a page fling
-		{
+		if(Math.abs(distance) <= viewConfiguration.getScaledPagingTouchSlop()) { //make sure the fling is sufficient for a page fling
 			return false;
 		}
 		return true;

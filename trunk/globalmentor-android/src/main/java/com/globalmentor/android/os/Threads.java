@@ -23,15 +23,13 @@ import android.os.*;
  * 
  * @author Garret Wilson
  */
-public class Threads
-{
+public class Threads {
 
 	/** A handler associated with the main thread. */
 	public final static Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
 
 	/** @return Whether the currently executing thread is the UI thread. */
-	public static boolean isMainThread()
-	{
+	public static boolean isMainThread() {
 		return Thread.currentThread() == Looper.getMainLooper().getThread();
 	}
 
@@ -40,10 +38,8 @@ public class Threads
 	 * @throws IllegalStateException if the code is executing in a non-UI thread.
 	 * @see #isMainThread()
 	 */
-	public static void checkMainThread()
-	{
-		if(!isMainThread())
-		{
+	public static void checkMainThread() {
+		if(!isMainThread()) {
 			throw new IllegalStateException("Code must be called from the UI thread; code was called from thread \"" + Thread.currentThread().getName() + "\".");
 		}
 	}
@@ -54,15 +50,10 @@ public class Threads
 	 * @param runnable The runnable to run on the main thread.
 	 * @throws NullPointerException if the given runnable is <code>null</code>.
 	 */
-	public static void runOnMainThread(final Runnable runnable)
-	{
-		if(isMainThread()) //if we're already on the main thread
-		{
+	public static void runOnMainThread(final Runnable runnable) {
+		if(isMainThread()) { //if we're already on the main thread
 			runnable.run(); //run the runnable now
-		}
-		else
-		//if we're not on the main thread
-		{
+		} else { //if we're not on the main thread
 			MAIN_THREAD_HANDLER.post(runnable); //run the runnable on the main thread later
 		}
 	}
@@ -73,15 +64,10 @@ public class Threads
 	 * @param runnable The runnable to run off the main thread.
 	 * @throws NullPointerException if the given runnable is <code>null</code>.
 	 */
-	public static void runOffMainThread(final Runnable runnable)
-	{
-		if(isMainThread()) //if we're already on the main thread
-		{
+	public static void runOffMainThread(final Runnable runnable) {
+		if(isMainThread()) { //if we're already on the main thread
 			new Thread(runnable).start(); //start a new thread to run the runnable
-		}
-		else
-		//if we're not on the main thread
-		{
+		} else { //if we're not on the main thread
 			runnable.run(); //run the runnable now
 		}
 	}

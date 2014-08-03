@@ -31,15 +31,12 @@ import com.globalmentor.android.net.Network;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractInternetPollingService extends AbstractPollingService
-{
+public abstract class AbstractInternetPollingService extends AbstractPollingService {
 
 	/** {@inheritDoc} This method calls {@link #pollInternet()} if it is verified that an Internet connection is present. */
 	@Override
-	protected final void poll()
-	{
-		if(Network.isConnected(this)) //only try to poll the Internet if we have an Internet connection
-		{
+	protected final void poll() {
+		if(Network.isConnected(this)) { //only try to poll the Internet if we have an Internet connection
 			Log.d(getLogTag(), "Polling Internet.");
 			pollInternet();
 		}

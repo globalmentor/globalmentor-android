@@ -29,16 +29,13 @@ import android.os.StrictMode;
  * 
  * @author Garret Wilson
  */
-public class BaseApplication extends Application
-{
+public class BaseApplication extends Application {
 
 	/** {@inheritDoc} This version turns on strict mode if in debug mode. */
 	@Override
-	public void onCreate()
-	{
+	public void onCreate() {
 		super.onCreate();
-		if(isDebug()) //if we're in debug mode, turn on strict mode
-		{
+		if(isDebug()) { //if we're in debug mode, turn on strict mode
 			StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build()); //detect and log all thread violations
 			StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build()); //detect and log all virtual machine violations
 		}
@@ -48,8 +45,7 @@ public class BaseApplication extends Application
 	 * @return Whether this application is in debug mode.
 	 * @see ApplicationInfo#FLAG_DEBUGGABLE
 	 */
-	public boolean isDebug()
-	{
+	public boolean isDebug() {
 		return Applications.isDebug(this);
 	}
 

@@ -26,8 +26,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
  * 
  * @author Garret Wilson
  */
-public class Applications
-{
+public class Applications {
 
 	/**
 	 * Checks whether the current application has the given permission.
@@ -37,8 +36,7 @@ public class Applications
 	 * @throws NullPointerException if the given context and/or permission name is <code>null</code>.
 	 * @see PackageManager#checkPermission(String, String)
 	 */
-	public static boolean hasPermission(final Context context, final String permissionName)
-	{
+	public static boolean hasPermission(final Context context, final String permissionName) {
 		return context.getPackageManager().checkPermission(permissionName, context.getPackageName()) == PackageManager.PERMISSION_GRANTED;
 
 	}
@@ -49,8 +47,7 @@ public class Applications
 	 * @return <code>true</code> if the application for this context is in debug mode.
 	 * @see ApplicationInfo#FLAG_DEBUGGABLE
 	 */
-	public static boolean isDebug(final Context context)
-	{
+	public static boolean isDebug(final Context context) {
 		return (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
 	}
 
@@ -62,8 +59,7 @@ public class Applications
 	 * @throws NameNotFoundException if the given package name is not recognized.
 	 * @throws ActivityNotFoundException if no activity could be found for the given package.
 	 */
-	public static void launch(final Context context, final ApplicationInfo applicationInfo)
-	{
+	public static void launch(final Context context, final ApplicationInfo applicationInfo) {
 		launch(context, applicationInfo.packageName);
 	}
 
@@ -75,11 +71,9 @@ public class Applications
 	 * @throws NameNotFoundException if the given package name is not recognized.
 	 * @throws ActivityNotFoundException if no activity could be found for the given package.
 	 */
-	public static void launch(final Context context, final String packageName)
-	{
+	public static void launch(final Context context, final String packageName) {
 		final Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-		if(launchIntent != null) //if there is a launch intent for this package
-		{
+		if(launchIntent != null) { //if there is a launch intent for this package
 			context.startActivity(launchIntent); //start the activity from the launch intent
 		}
 	}

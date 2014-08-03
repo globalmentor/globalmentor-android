@@ -29,8 +29,7 @@ import android.content.Context;
  * 
  * @author Garret Wilson
  */
-public class Accounts
-{
+public class Accounts {
 
 	/** The account type for listing Google accounts. */
 	public final static String GOOGLE_ACCOUNT_TYPE = "com.google";
@@ -44,8 +43,7 @@ public class Accounts
 	 * @return A list of all Google accounts.
 	 * @see #GOOGLE_ACCOUNT_TYPE
 	 */
-	public static List<Account> getGoogleAccounts(final Context context)
-	{
+	public static List<Account> getGoogleAccounts(final Context context) {
 		return Arrays.asList(AccountManager.get(context).getAccountsByType(GOOGLE_ACCOUNT_TYPE));
 	}
 
@@ -59,8 +57,7 @@ public class Accounts
 	 * @throws IllegalArgumentException if no features are given.
 	 * @see #GOOGLE_ACCOUNT_TYPE
 	 */
-	public static AccountManagerFuture<Account[]> getGoogleAccountsByFeature(final Context context, final String... features)
-	{
+	public static AccountManagerFuture<Account[]> getGoogleAccountsByFeature(final Context context, final String... features) {
 		checkArgument(features.length > 0, "No features provided.");
 		return AccountManager.get(context).getAccountsByTypeAndFeatures(GOOGLE_ACCOUNT_TYPE, features, null, null);
 	}
@@ -75,11 +72,9 @@ public class Accounts
 	 * @throws IllegalStateException if no Google account is registered.
 	 * @see #getGoogleAccounts(Context)
 	 */
-	public static Account getGoogleAccount(final Context context)
-	{
+	public static Account getGoogleAccount(final Context context) {
 		final List<Account> accounts = getGoogleAccounts(context);
-		if(accounts.isEmpty())
-		{
+		if(accounts.isEmpty()) {
 			throw new IllegalStateException("No Google account registered.");
 		}
 		return accounts.get(0);
@@ -97,8 +92,7 @@ public class Accounts
 	 * @throws IOException if the authenticator encountered an IOException while communicating with the authentication server.
 	 * @see #getGoogleAccountsByFeature(Context, String...)
 	 */
-	public static Account getGoogleMailAccount(final Context context) throws OperationCanceledException, AuthenticatorException, IOException
-	{
+	public static Account getGoogleMailAccount(final Context context) throws OperationCanceledException, AuthenticatorException, IOException {
 		final Account[] accounts = getGoogleAccountsByFeature(context, MAIL_FEATURE).getResult();
 		return accounts.length > 0 ? accounts[0] : null;
 	}

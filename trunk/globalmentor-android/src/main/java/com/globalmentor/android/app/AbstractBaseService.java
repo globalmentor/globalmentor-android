@@ -24,15 +24,13 @@ import android.content.pm.ApplicationInfo;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractBaseService extends Service
-{
+public abstract class AbstractBaseService extends Service {
 
 	/**
 	 * @return Whether this application is in debug mode.
 	 * @see ApplicationInfo#FLAG_DEBUGGABLE
 	 */
-	public boolean isDebug()
-	{
+	public boolean isDebug() {
 		return Applications.isDebug(this);
 	}
 
@@ -43,8 +41,7 @@ public abstract class AbstractBaseService extends Service
 	 * </p>
 	 * @return A log tag appropriate for this service.
 	 */
-	public String getLogTag()
-	{
+	public String getLogTag() {
 		return getClass().getSimpleName();
 	}
 }

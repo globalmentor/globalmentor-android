@@ -32,15 +32,13 @@ import android.widget.*;
  * 
  * @see ListActivity
  */
-public abstract class AbstractListAdapter<I> extends BaseAdapter
-{
+public abstract class AbstractListAdapter<I> extends BaseAdapter {
 
 	/** The current context. */
 	private final Context context;
 
 	/** @return The current context. */
-	protected Context getContext()
-	{
+	protected Context getContext() {
 		return context;
 	}
 
@@ -49,8 +47,7 @@ public abstract class AbstractListAdapter<I> extends BaseAdapter
 	 * @param context The current context.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public AbstractListAdapter(final Context context)
-	{
+	public AbstractListAdapter(final Context context) {
 		this.context = checkInstance(context);
 	}
 
@@ -61,8 +58,7 @@ public abstract class AbstractListAdapter<I> extends BaseAdapter
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent)
-	{
+	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		final I item = (I)getItem(position); //get the item at this position
 		final View view = convertView != null ? convertView : createView(position, getItemId(position), item, parent); //create the view if needed
 		initializeView(view, position, getItemId(position), item, parent); //initialize the view
@@ -90,8 +86,7 @@ public abstract class AbstractListAdapter<I> extends BaseAdapter
 	 * @param item The item in the list for which a view should be created.
 	 * @param parent The parent to which this view will eventually be attached.
 	 */
-	protected void initializeView(final View view, final int position, final long id, final I item, final ViewGroup parent)
-	{
+	protected void initializeView(final View view, final int position, final long id, final I item, final ViewGroup parent) {
 	}
 
 }

@@ -21,8 +21,7 @@ package com.globalmentor.android.view;
  * 
  * @author Garret Wilson
  */
-public enum Axis
-{
+public enum Axis {
 	/** The horizontal (X) axis. */
 	HORIZONTAL,
 

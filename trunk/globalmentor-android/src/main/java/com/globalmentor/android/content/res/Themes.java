@@ -30,8 +30,7 @@ import android.util.*;
  * @see <a href="http://stackoverflow.com/questions/5982132/android-how-to-get-value-of-listpreferreditemheight-attribute-in-code">Android: how to get value of
  *      “listPreferredItemHeight” attribute in code?</a>
  */
-public class Themes
-{
+public class Themes {
 
 	/**
 	 * Resolves an attribute of the current context theme and returns the attribute value as a dimension of the display.
@@ -47,8 +46,7 @@ public class Themes
 	 * @see Resources#getDisplayMetrics()
 	 * @see Theme#resolveAttribute(int, TypedValue, boolean)
 	 */
-	public static float getAttributeDimension(final Context context, final int resId)
-	{
+	public static float getAttributeDimension(final Context context, final int resId) {
 		return getAttributeDimension(context, context.getTheme(), resId);
 	}
 
@@ -66,16 +64,13 @@ public class Themes
 	 * @see Resources#getDisplayMetrics()
 	 * @see Theme#resolveAttribute(int, TypedValue, boolean)
 	 */
-	public static float getAttributeDimension(final Context context, final Theme theme, final int resId)
-	{
+	public static float getAttributeDimension(final Context context, final Theme theme, final int resId) {
 		final TypedValue typedValue = new TypedValue(); //create a new typed value to received the resolved attribute value
 		final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-		if(!theme.resolveAttribute(resId, typedValue, true)) //if we can't resolve the value
-		{
+		if(!theme.resolveAttribute(resId, typedValue, true)) { //if we can't resolve the value
 			throw new NotFoundException("Resource ID #0x" + Integer.toHexString(resId));
 		}
-		if(typedValue.type != TypedValue.TYPE_DIMENSION) //if the value isn't of the correct type
-		{
+		if(typedValue.type != TypedValue.TYPE_DIMENSION) { //if the value isn't of the correct type
 			throw new NotFoundException("Resource ID #0x" + Integer.toHexString(resId) + " type #0x" + Integer.toHexString(typedValue.type) + " is not valid");
 		}
 		return typedValue.getDimension(displayMetrics); //return the value of the attribute in terms of the display
@@ -89,8 +84,7 @@ public class Themes
 	 * @see <a href="http://stackoverflow.com/questions/5982132/android-how-to-get-value-of-listpreferreditemheight-attribute-in-code">Android: how to get value
 	 *      of “listPreferredItemHeight” attribute in code?</a>
 	 */
-	public static float getListPreferredItemHeightDimension(final Context context)
-	{
+	public static float getListPreferredItemHeightDimension(final Context context) {
 		return getAttributeDimension(context, android.R.attr.listPreferredItemHeight);
 	}
 }

@@ -31,8 +31,7 @@ import android.preference.PreferenceManager;
  * 
  * @see SharedPreferences
  */
-public class Preferences
-{
+public class Preferences {
 
 	/** The pattern for splitting a string into lines, accepting either <code>LF</code> or <code>CR+LF</code>. */
 	public final static Pattern LINE_SPLIT_PATTERN = Pattern.compile("\\r?\\n");
@@ -48,8 +47,7 @@ public class Preferences
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 * @see PreferenceManager#setDefaultValues(Context, int, boolean)
 	 */
-	public static void initializeDefaultValues(final Context context, final int resId)
-	{
+	public static void initializeDefaultValues(final Context context, final int resId) {
 		initializeDefaultValues(context, resId, false); //load default preference values, but only if needed
 	}
 
@@ -65,8 +63,7 @@ public class Preferences
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 * @see PreferenceManager#setDefaultValues(Context, int, boolean)
 	 */
-	public static void initializeDefaultValues(final Context context, final int resId, final boolean readAgain)
-	{
+	public static void initializeDefaultValues(final Context context, final int resId, final boolean readAgain) {
 		PreferenceManager.setDefaultValues(context, resId, readAgain);
 	}
 
@@ -85,8 +82,7 @@ public class Preferences
 	 * @see #LINE_SPLIT_PATTERN
 	 * @see String#trim()
 	 */
-	public static List<String> getStringLines(final SharedPreferences preferences, final String key, final List<String> defValue)
-	{
+	public static List<String> getStringLines(final SharedPreferences preferences, final String key, final List<String> defValue) {
 		return getStringLines(preferences, key, defValue, false); //ignore empty lines
 	}
 
@@ -106,8 +102,7 @@ public class Preferences
 	 * @see #LINE_SPLIT_PATTERN
 	 * @see String#trim()
 	 */
-	public static List<String> getStringLines(final SharedPreferences preferences, final String key, final List<String> defValue, final boolean includeEmptyLines)
-	{
+	public static List<String> getStringLines(final SharedPreferences preferences, final String key, final List<String> defValue, final boolean includeEmptyLines) {
 		return getStringLines(preferences, key, defValue, includeEmptyLines, true); //trim lines
 	}
 
@@ -128,26 +123,20 @@ public class Preferences
 	 * @see String#trim()
 	 */
 	public static List<String> getStringLines(final SharedPreferences preferences, final String key, final List<String> defValue,
-			final boolean includeEmptyLines, final boolean trimLines)
-	{
+			final boolean includeEmptyLines, final boolean trimLines) {
 		final String preferenceString = preferences.getString(key, null); //get the preference string
-		if(preferenceString == null) //if there is no such value
-		{
+		if(preferenceString == null) { //if there is no such value
 			return defValue; //return the provided default value
 		}
-		if(preferenceString.isEmpty())
-		{
+		if(preferenceString.isEmpty()) {
 			return emptyList();
 		}
 		final List<String> lines = new ArrayList<String>();
-		for(String line : LINE_SPLIT_PATTERN.split(preferenceString, -1)) //look at each line, including any trailing empty line
-		{
-			if(trimLines)
-			{
+		for(String line : LINE_SPLIT_PATTERN.split(preferenceString, -1)) { //look at each line, including any trailing empty line
+			if(trimLines) {
 				line = line.trim();
 			}
-			if(includeEmptyLines || !line.isEmpty()) //add the line unless it's empty and we shouldn't include empty lines
-			{
+			if(includeEmptyLines || !line.isEmpty()) { //add the line unless it's empty and we shouldn't include empty lines
 				lines.add(line);
 			}
 		}

@@ -44,15 +44,13 @@ import android.widget.Toast;
  * 
  * @author Garret Wilson
  */
-public class Notifications
-{
+public class Notifications {
 
 	/** A click handler that does nothing. */
-	private final static DialogInterface.OnClickListener NOP_ON_CLICK_HANDLER = new DialogInterface.OnClickListener()
-	{
+	private final static DialogInterface.OnClickListener NOP_ON_CLICK_HANDLER = new DialogInterface.OnClickListener() {
+
 		@Override
-		public void onClick(final DialogInterface dialog, final int which)
-		{
+		public void onClick(final DialogInterface dialog, final int which) {
 		}
 	};
 
@@ -72,8 +70,7 @@ public class Notifications
 	 * </p>
 	 * @return A unique ID to be used for notifications.
 	 */
-	public static int generateNotificationID()
-	{
+	public static int generateNotificationID() {
 		return nextNotificationID.getAndIncrement(); //return the current ID and increment the value
 	}
 
@@ -87,8 +84,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void info(final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void info(final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		info(context.getClass().getSimpleName(), context, resId, formatArgs);
 	}
 
@@ -104,8 +100,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void info(final int quantity, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void info(final int quantity, final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		info(quantity, context.getClass().getSimpleName(), context, resId, formatArgs);
 	}
 
@@ -120,8 +115,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void info(final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void info(final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		info(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId));
 	}
 
@@ -138,8 +132,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void info(final int quantity, final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void info(final int quantity, final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		info(tag, context, formatArgs.length > 0 ? context.getResources().getQuantityString(resId, quantity, formatArgs) : context.getResources()
 				.getQuantityString(resId, quantity));
 	}
@@ -152,8 +145,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void info(final Context context, final CharSequence message)
-	{
+	public static void info(final Context context, final CharSequence message) {
 		info(context.getClass().getSimpleName(), context, message);
 	}
 
@@ -166,14 +158,12 @@ public class Notifications
 	 * @see Log#i(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void info(final String tag, final Context context, final CharSequence message)
-	{
+	public static void info(final String tag, final Context context, final CharSequence message) {
 		Log.i(tag, message.toString()); //log the message
-		runOnMainThread(new Runnable()
-		{
+		runOnMainThread(new Runnable() {
+
 			@Override
-			public void run()
-			{
+			public void run() {
 				Toast.makeText(context, message, Toast.LENGTH_SHORT).show(); //show the message in a toast on the main thread
 			}
 		});
@@ -189,8 +179,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void error(final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		error(context.getClass().getSimpleName(), context, resId, formatArgs);
 	}
 
@@ -206,8 +195,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final int quantity, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void error(final int quantity, final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		error(quantity, context.getClass().getSimpleName(), context, resId, formatArgs);
 	}
 
@@ -223,8 +211,7 @@ public class Notifications
 	 * @see Log#e(String, String, Throwable)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final Context context, final Throwable throwable, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void error(final Context context, final Throwable throwable, final int resId, final Object... formatArgs) throws NotFoundException {
 		error(context.getClass().getSimpleName(), context, throwable, resId, formatArgs);
 	}
 
@@ -243,8 +230,7 @@ public class Notifications
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
 	public static void error(final int quantity, final Context context, final Throwable throwable, final int resId, final Object... formatArgs)
-			throws NotFoundException
-	{
+			throws NotFoundException {
 		error(quantity, context.getClass().getSimpleName(), context, throwable, resId, formatArgs);
 	}
 
@@ -259,8 +245,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void error(final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		error(tag, context, null, resId, formatArgs);
 	}
 
@@ -277,8 +262,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final int quantity, final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException
-	{
+	public static void error(final int quantity, final String tag, final Context context, final int resId, final Object... formatArgs) throws NotFoundException {
 		error(quantity, tag, context, null, resId, formatArgs);
 	}
 
@@ -296,8 +280,7 @@ public class Notifications
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
 	public static void error(final String tag, final Context context, final Throwable throwable, final int resId, final Object... formatArgs)
-			throws NotFoundException
-	{
+			throws NotFoundException {
 		error(tag, context, formatArgs.length > 0 ? context.getResources().getString(resId, formatArgs) : context.getResources().getString(resId), throwable);
 	}
 
@@ -317,8 +300,7 @@ public class Notifications
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
 	public static void error(final int quantity, final String tag, final Context context, final Throwable throwable, final int resId, final Object... formatArgs)
-			throws NotFoundException
-	{
+			throws NotFoundException {
 		error(tag, context, formatArgs.length > 0 ? context.getResources().getQuantityString(resId, quantity, formatArgs) : context.getResources()
 				.getQuantityString(resId, quantity), throwable);
 	}
@@ -331,8 +313,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final Context context, final CharSequence message)
-	{
+	public static void error(final Context context, final CharSequence message) {
 		error(context.getClass().getSimpleName(), context, message);
 	}
 
@@ -345,8 +326,7 @@ public class Notifications
 	 * @see Log#e(String, String, Throwable)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final Context context, final Throwable throwable)
-	{
+	public static void error(final Context context, final Throwable throwable) {
 		error(context.getClass().getSimpleName(), context, throwable);
 	}
 
@@ -360,8 +340,7 @@ public class Notifications
 	 * @see Log#e(String, String, Throwable)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final Context context, final CharSequence message, final Throwable throwable)
-	{
+	public static void error(final Context context, final CharSequence message, final Throwable throwable) {
 		error(context.getClass().getSimpleName(), context, message, throwable);
 	}
 
@@ -374,8 +353,7 @@ public class Notifications
 	 * @see Log#e(String, String)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final String tag, final Context context, final CharSequence message)
-	{
+	public static void error(final String tag, final Context context, final CharSequence message) {
 		error(tag, context, message, null);
 	}
 
@@ -389,8 +367,7 @@ public class Notifications
 	 * @see Log#e(String, String, Throwable)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final String tag, final Context context, final Throwable throwable)
-	{
+	public static void error(final String tag, final Context context, final Throwable throwable) {
 		error(tag, context, throwable.getMessage() != null ? throwable.getMessage() : "", throwable);
 	}
 
@@ -406,36 +383,28 @@ public class Notifications
 	 * @see Log#e(String, String, Throwable)
 	 * @see Toast#makeText(Context, CharSequence, int)
 	 */
-	public static void error(final String tag, final Context context, final CharSequence message, final Throwable throwable)
-	{
+	public static void error(final String tag, final Context context, final CharSequence message, final Throwable throwable) {
 		final String messageString = message.toString();
-		if(throwable != null) //choose logging method based upon whether there is a throwable (unfortunately the Log.e() methods are written differently and do not delegate to one another)
-		{
+		if(throwable != null) { //choose logging method based upon whether there is a throwable (unfortunately the Log.e() methods are written differently and do not delegate to one another)
 			Log.e(tag, messageString, throwable);
-		}
-		else
-		{
+		} else {
 			Log.e(tag, messageString);
 		}
 		final StringBuilder toastMessageBuilder = new StringBuilder(context.getResources().getString(R.string.error_label)); //Error
 		toastMessageBuilder.append(": (").append(tag).append(')'); //: (tag)
-		if(!messageString.isEmpty()) //add the message, if available
-		{
+		if(!messageString.isEmpty()) { //add the message, if available
 			toastMessageBuilder.append(' ').append(messageString);
 		}
-		if(throwable != null) //add the throwable message, if available
-		{
+		if(throwable != null) { //add the throwable message, if available
 			final String throwableMessage = throwable.getMessage();
-			if(throwableMessage != null && !throwableMessage.isEmpty())
-			{
+			if(throwableMessage != null && !throwableMessage.isEmpty()) {
 				toastMessageBuilder.append(' ').append(throwableMessage);
 			}
 		}
-		runOnMainThread(new Runnable()
-		{
+		runOnMainThread(new Runnable() {
+
 			@Override
-			public void run()
-			{
+			public void run() {
 				Toast.makeText(context, toastMessageBuilder, Toast.LENGTH_LONG).show(); //show the message in a toast on the main thread
 			}
 		});
@@ -455,8 +424,7 @@ public class Notifications
 	 * @throws NullPointerException if the context is <code>null</code>.
 	 * @throws IllegalArgumentException if the given duration is negative.
 	 */
-	public static void notify(final Context context)
-	{
+	public static void notify(final Context context) {
 		notify(context, Milliseconds.fromSeconds(4)); //play the audio and a blank notification for several seconds
 	}
 
@@ -473,8 +441,7 @@ public class Notifications
 	 * @throws NullPointerException if the context is <code>null</code>.
 	 * @throws IllegalArgumentException if the given duration is negative.
 	 */
-	public static void notify(final Context context, final long duration)
-	{
+	public static void notify(final Context context, final long duration) {
 		notify(context, duration, null);
 	}
 
@@ -498,8 +465,7 @@ public class Notifications
 	 * @throws IllegalArgumentException if the given duration is negative.
 	 * @see Log#i(String, String)
 	 */
-	public static void notify(final Context context, final long duration, final int tickerTextResId, final Object... formatArgs)
-	{
+	public static void notify(final Context context, final long duration, final int tickerTextResId, final Object... formatArgs) {
 		notify(context.getClass().getSimpleName(), context, duration, tickerTextResId, formatArgs);
 	}
 
@@ -528,8 +494,7 @@ public class Notifications
 	 * @see Log#i(String, String)
 	 */
 	public static void notify(final Context context, final long duration, final int contentTitleResId, final int contentTextResId, final int tickerTextResId,
-			final Object... formatArgs)
-	{
+			final Object... formatArgs) {
 		notify(context.getClass().getSimpleName(), context, duration, contentTitleResId, contentTextResId, tickerTextResId, formatArgs);
 	}
 
@@ -552,8 +517,7 @@ public class Notifications
 	 * @throws IllegalArgumentException if the given duration is negative.
 	 * @see Log#i(String, String)
 	 */
-	public static void notify(final Context context, final long duration, final CharSequence tickerText)
-	{
+	public static void notify(final Context context, final long duration, final CharSequence tickerText) {
 		notify(context.getClass().getSimpleName(), context, duration, tickerText);
 	}
 
@@ -580,8 +544,7 @@ public class Notifications
 	 * @throws IllegalArgumentException if the given duration is negative.
 	 * @see Log#i(String, String)
 	 */
-	public static void notify(final Context context, final long duration, CharSequence contentTitle, CharSequence contentText, CharSequence tickerText)
-	{
+	public static void notify(final Context context, final long duration, CharSequence contentTitle, CharSequence contentText, CharSequence tickerText) {
 		notify(context.getClass().getSimpleName(), context, duration, contentTitle, contentText, tickerText);
 	}
 
@@ -607,8 +570,7 @@ public class Notifications
 	 * @throws IllegalArgumentException if the given duration is negative.
 	 * @see Log#i(String, String)
 	 */
-	public static void notify(final String tag, final Context context, final long duration, final int tickerTextResId, final Object... formatArgs)
-	{
+	public static void notify(final String tag, final Context context, final long duration, final int tickerTextResId, final Object... formatArgs) {
 		notify(tag, context, duration, 0, 0, tickerTextResId, formatArgs);
 	}
 
@@ -640,8 +602,7 @@ public class Notifications
 	 * @see Log#i(String, String)
 	 */
 	public static void notify(final String tag, final Context context, final long duration, final int contentTitleResId, final int contentTextResId,
-			final int tickerTextResId, final Object... formatArgs)
-	{
+			final int tickerTextResId, final Object... formatArgs) {
 		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
 		final String contentTitle = contentTitleResId == 0 ? null : resources.getString(contentTitleResId);
 		final String contentText = contentTextResId == 0 ? null : resources.getString(contentTextResId);
@@ -671,8 +632,7 @@ public class Notifications
 	 * @throws IllegalArgumentException if the given duration is negative.
 	 * @see Log#i(String, String)
 	 */
-	public static void notify(final String tag, final Context context, final long duration, final CharSequence tickerText)
-	{
+	public static void notify(final String tag, final Context context, final long duration, final CharSequence tickerText) {
 		notify(tag, context, duration, null, null, tickerText);
 	}
 
@@ -703,25 +663,20 @@ public class Notifications
 	 * @see Log#i(String, String)
 	 */
 	public static void notify(final String tag, final Context context, final long duration, CharSequence contentTitle, CharSequence contentText,
-			CharSequence tickerText)
-	{
+			CharSequence tickerText) {
 		checkArgumentNotNegative(duration);
-		if(contentText == null) //if no content text is given
-		{
+		if(contentText == null) { //if no content text is given
 			contentText = tickerText; //use the ticker text, if any
 		}
-		if(tickerText == null) //if there was no given ticker text
-		{
+		if(tickerText == null) { //if there was no given ticker text
 			tickerText = getInstance(contentText, contentTitle); //use the content text or, if there is no content text, the content title 
 		}
-		if(tickerText != null) //if there is log text
-		{
+		if(tickerText != null) { //if there is log text
 			checkInstance(tag, "A tag must be provided if notification text is given.");
 			Log.i(tag, tickerText.toString()); //log the ticker text as an info message
 		}
 		int icon = context.getApplicationInfo().icon; //get the application's icon
-		if(icon == 0) //if the application has no icon
-		{
+		if(icon == 0) { //if the application has no icon
 			icon = android.R.drawable.ic_menu_info_details; //use a default Android info icon
 		}
 		final Notification notification = new Notification(icon, tickerText, System.currentTimeMillis()); //create a new notification
@@ -729,20 +684,17 @@ public class Notifications
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent); //set the notification values
 		notification.flags |= Notification.FLAG_AUTO_CANCEL; //automatically cancel the event when clicked
 		notification.defaults |= Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS; //turn on sound and lights
-		if(Applications.hasPermission(context, Manifest.permission.VIBRATE)) //if the application has vibrate permission
-		{
+		if(Applications.hasPermission(context, Manifest.permission.VIBRATE)) { //if the application has vibrate permission
 			notification.defaults |= Notification.DEFAULT_VIBRATE; //turn on vibration, if the application has that permission
 		}
 		final int notificationID = generateNotificationID(); //generate a unique notification ID
 		final NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE); //get the notification manager
 		notificationManager.notify(notificationID, notification); //start the notification
-		if(duration < Long.MAX_VALUE) //if we should limit the duration
-		{
-			MAIN_THREAD_HANDLER.postDelayed(new Runnable() //in the main thread, wait a while and then remove the notification
-					{
+		if(duration < Long.MAX_VALUE) { //if we should limit the duration
+			MAIN_THREAD_HANDLER.postDelayed(new Runnable() { //in the main thread, wait a while and then remove the notification
+
 						@Override
-						public void run()
-						{
+						public void run() {
 							notificationManager.cancel(notificationID); //cancel the notification
 						}
 					}, duration); //delay the notification cancellation
@@ -758,8 +710,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final int messageResId, final DialogInterface.OnClickListener yesOnClickListener,
-			final Object... messageFormatArgs)
-	{
+			final Object... messageFormatArgs) {
 		ask(context, messageResId, 0, yesOnClickListener, messageFormatArgs);
 	}
 
@@ -773,8 +724,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener yesOnClickListener,
-			final Object... messageFormatArgs)
-	{
+			final Object... messageFormatArgs) {
 		ask(context, messageResId, titleResId, 0, yesOnClickListener, messageFormatArgs);
 	}
 
@@ -789,8 +739,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final int messageResId, final int titleResId, final int iconResId,
-			final DialogInterface.OnClickListener yesOnClickListener, final Object... messageFormatArgs)
-	{
+			final DialogInterface.OnClickListener yesOnClickListener, final Object... messageFormatArgs) {
 		ask(context, messageResId, titleResId, iconResId, yesOnClickListener, null, messageFormatArgs);
 	}
 
@@ -806,8 +755,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final int messageResId, final int titleResId, final int iconResId,
-			final DialogInterface.OnClickListener yesOnClickListener, final DialogInterface.OnClickListener noOnClickListener, final Object... messageFormatArgs)
-	{
+			final DialogInterface.OnClickListener yesOnClickListener, final DialogInterface.OnClickListener noOnClickListener, final Object... messageFormatArgs) {
 		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
 		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
 				.getString(messageResId));
@@ -823,8 +771,7 @@ public class Notifications
 	 * @param yesOnClickListener The handler for the "yes" response.
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
-	public static void ask(final Context context, final CharSequence message, final DialogInterface.OnClickListener yesOnClickListener)
-	{
+	public static void ask(final Context context, final CharSequence message, final DialogInterface.OnClickListener yesOnClickListener) {
 		ask(context, message, null, yesOnClickListener);
 	}
 
@@ -836,8 +783,7 @@ public class Notifications
 	 * @param yesOnClickListener The handler for the "yes" response.
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
-	public static void ask(final Context context, final CharSequence message, final CharSequence title, final DialogInterface.OnClickListener yesOnClickListener)
-	{
+	public static void ask(final Context context, final CharSequence message, final CharSequence title, final DialogInterface.OnClickListener yesOnClickListener) {
 		ask(context, message, title, null, yesOnClickListener);
 	}
 
@@ -851,8 +797,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final CharSequence message, final CharSequence title, final Drawable icon,
-			final DialogInterface.OnClickListener yesOnClickListener)
-	{
+			final DialogInterface.OnClickListener yesOnClickListener) {
 		ask(context, message, title, icon, yesOnClickListener, null);
 	}
 
@@ -867,10 +812,8 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "yes" click listener is <code>null</code>.
 	 */
 	public static void ask(final Context context, final CharSequence message, final CharSequence title, Drawable icon,
-			final DialogInterface.OnClickListener yesOnClickListener, DialogInterface.OnClickListener noOnClickListener)
-	{
-		if(icon == null) //use a default icon if none is given
-		{
+			final DialogInterface.OnClickListener yesOnClickListener, DialogInterface.OnClickListener noOnClickListener) {
+		if(icon == null) { //use a default icon if none is given
 			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_help);
 		}
 		final Resources resources = context.getResources();
@@ -890,8 +833,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void confirm(final Context context, final int messageResId, final DialogInterface.OnClickListener okOnClickListener,
-			final Object... messageFormatArgs)
-	{
+			final Object... messageFormatArgs) {
 		confirm(context, messageResId, 0, okOnClickListener, messageFormatArgs);
 	}
 
@@ -905,8 +847,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void confirm(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener okOnClickListener,
-			final Object... messageFormatArgs)
-	{
+			final Object... messageFormatArgs) {
 		confirm(context, messageResId, titleResId, 0, okOnClickListener, messageFormatArgs);
 	}
 
@@ -921,8 +862,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void confirm(final Context context, final int messageResId, final int titleResId, final int iconResId,
-			final DialogInterface.OnClickListener okOnClickListener, final Object... messageFormatArgs)
-	{
+			final DialogInterface.OnClickListener okOnClickListener, final Object... messageFormatArgs) {
 		confirm(context, messageResId, titleResId, iconResId, okOnClickListener, null, messageFormatArgs);
 	}
 
@@ -938,8 +878,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void confirm(final Context context, final int messageResId, final int titleResId, final int iconResId,
-			final DialogInterface.OnClickListener okOnClickListener, final DialogInterface.OnClickListener cancelOnClickListener, final Object... messageFormatArgs)
-	{
+			final DialogInterface.OnClickListener okOnClickListener, final DialogInterface.OnClickListener cancelOnClickListener, final Object... messageFormatArgs) {
 		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
 		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
 				.getString(messageResId));
@@ -955,8 +894,7 @@ public class Notifications
 	 * @param okOnClickListener The handler for the "OK" response.
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
-	public static void confirm(final Context context, final CharSequence message, final DialogInterface.OnClickListener okOnClickListener)
-	{
+	public static void confirm(final Context context, final CharSequence message, final DialogInterface.OnClickListener okOnClickListener) {
 		confirm(context, message, null, okOnClickListener);
 	}
 
@@ -969,8 +907,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void confirm(final Context context, final CharSequence message, final CharSequence title,
-			final DialogInterface.OnClickListener okOnClickListener)
-	{
+			final DialogInterface.OnClickListener okOnClickListener) {
 		confirm(context, message, title, null, okOnClickListener);
 	}
 
@@ -984,8 +921,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void confirm(final Context context, final CharSequence message, final CharSequence title, final Drawable icon,
-			final DialogInterface.OnClickListener okOnClickListener)
-	{
+			final DialogInterface.OnClickListener okOnClickListener) {
 		confirm(context, message, title, icon, okOnClickListener, null);
 	}
 
@@ -1000,10 +936,8 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void confirm(final Context context, final CharSequence message, final CharSequence title, Drawable icon,
-			final DialogInterface.OnClickListener okOnClickListener, DialogInterface.OnClickListener cancelOnClickListener)
-	{
-		if(icon == null) //use a default icon if none is given
-		{
+			final DialogInterface.OnClickListener okOnClickListener, DialogInterface.OnClickListener cancelOnClickListener) {
+		if(icon == null) { //use a default icon if none is given
 			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_help);
 		}
 		final Resources resources = context.getResources();
@@ -1019,8 +953,7 @@ public class Notifications
 	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public static void alert(final Context context, final int messageResId, final Object... messageFormatArgs)
-	{
+	public static void alert(final Context context, final int messageResId, final Object... messageFormatArgs) {
 		alert(context, messageResId, 0, messageFormatArgs);
 	}
 
@@ -1032,8 +965,7 @@ public class Notifications
 	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public static void alert(final Context context, final int messageResId, final int titleResId, final Object... messageFormatArgs)
-	{
+	public static void alert(final Context context, final int messageResId, final int titleResId, final Object... messageFormatArgs) {
 		alert(context, messageResId, titleResId, 0, messageFormatArgs);
 	}
 
@@ -1046,8 +978,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void alert(final Context context, final int messageResId, final DialogInterface.OnClickListener okOnClickListener,
-			final Object... messageFormatArgs)
-	{
+			final Object... messageFormatArgs) {
 		alert(context, messageResId, 0, okOnClickListener, messageFormatArgs);
 	}
 
@@ -1061,8 +992,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void alert(final Context context, final int messageResId, final int titleResId, final DialogInterface.OnClickListener okOnClickListener,
-			final Object... messageFormatArgs)
-	{
+			final Object... messageFormatArgs) {
 		alert(context, messageResId, titleResId, 0, okOnClickListener, messageFormatArgs);
 	}
 
@@ -1075,8 +1005,7 @@ public class Notifications
 	 * @param messageFormatArgs The format arguments that will be used for substitution in the message, if any.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId, final Object... messageFormatArgs)
-	{
+	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId, final Object... messageFormatArgs) {
 		alert(context, messageResId, titleResId, iconResId, NOP_ON_CLICK_HANDLER, messageFormatArgs);
 	}
 
@@ -1091,8 +1020,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId,
-			final DialogInterface.OnClickListener okOnClickListener, final Object... messageFormatArgs)
-	{
+			final DialogInterface.OnClickListener okOnClickListener, final Object... messageFormatArgs) {
 		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
 		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
 				.getString(messageResId));
@@ -1107,8 +1035,7 @@ public class Notifications
 	 * @param message The message to show, or <code>null</code> if no message should be shown.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public static void alert(final Context context, final CharSequence message)
-	{
+	public static void alert(final Context context, final CharSequence message) {
 		alert(context, message, (CharSequence)null);
 	}
 
@@ -1119,8 +1046,7 @@ public class Notifications
 	 * @param title The title to use, or <code>null</code> if no title should be used.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public static void alert(final Context context, final CharSequence message, final CharSequence title)
-	{
+	public static void alert(final Context context, final CharSequence message, final CharSequence title) {
 		alert(context, message, title, NOP_ON_CLICK_HANDLER);
 	}
 
@@ -1131,8 +1057,7 @@ public class Notifications
 	 * @param okOnClickListener The handler for the "OK" response.
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
-	public static void alert(final Context context, final CharSequence message, final DialogInterface.OnClickListener okOnClickListener)
-	{
+	public static void alert(final Context context, final CharSequence message, final DialogInterface.OnClickListener okOnClickListener) {
 		alert(context, message, null, okOnClickListener);
 	}
 
@@ -1144,8 +1069,7 @@ public class Notifications
 	 * @param okOnClickListener The handler for the "OK" response.
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
-	public static void alert(final Context context, final CharSequence message, final CharSequence title, final DialogInterface.OnClickListener okOnClickListener)
-	{
+	public static void alert(final Context context, final CharSequence message, final CharSequence title, final DialogInterface.OnClickListener okOnClickListener) {
 		alert(context, message, title, null, okOnClickListener);
 	}
 
@@ -1157,8 +1081,7 @@ public class Notifications
 	 * @param icon The icon to use, or <code>null</code> if a default information icon should be used.
 	 * @throws NullPointerException if the given context is <code>null</code>.
 	 */
-	public static void alert(final Context context, final CharSequence message, final CharSequence title, Drawable icon)
-	{
+	public static void alert(final Context context, final CharSequence message, final CharSequence title, Drawable icon) {
 		alert(context, message, title, icon, null);
 	}
 
@@ -1172,10 +1095,8 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or "OK" click listener is <code>null</code>.
 	 */
 	public static void alert(final Context context, final CharSequence message, final CharSequence title, Drawable icon,
-			final DialogInterface.OnClickListener okOnClickListener)
-	{
-		if(icon == null) //use a default icon if none is given
-		{
+			final DialogInterface.OnClickListener okOnClickListener) {
+		if(icon == null) { //use a default icon if none is given
 			icon = context.getResources().getDrawable(android.R.drawable.ic_menu_info_details);
 		}
 		final Resources resources = context.getResources();
@@ -1195,8 +1116,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or positive click listener is <code>null</code>.
 	 */
 	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId, final int positiveTextResId,
-			final DialogInterface.OnClickListener positiveOnClickListener, final Object... messageFormatArgs)
-	{
+			final DialogInterface.OnClickListener positiveOnClickListener, final Object... messageFormatArgs) {
 		alert(context, messageResId, titleResId, iconResId, positiveTextResId, positiveOnClickListener, messageFormatArgs);
 	}
 
@@ -1216,8 +1136,7 @@ public class Notifications
 	 */
 	public static void alert(final Context context, final int messageResId, final int titleResId, final int iconResId, final int positiveTextResId,
 			final DialogInterface.OnClickListener positiveOnClickListener, final int negativeTextResId,
-			final DialogInterface.OnClickListener negativeOnClickListener, final Object... messageFormatArgs)
-	{
+			final DialogInterface.OnClickListener negativeOnClickListener, final Object... messageFormatArgs) {
 		final Resources resources = context.getResources(); //retrieve the values, if any from the resources
 		final String message = messageResId == 0 ? null : (messageFormatArgs.length > 0 ? resources.getString(messageResId, messageFormatArgs) : resources
 				.getString(messageResId));
@@ -1239,8 +1158,7 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or positive click listener is <code>null</code>.
 	 */
 	public static void alert(final Context context, final CharSequence message, final CharSequence title, final Drawable icon, final CharSequence positiveText,
-			final DialogInterface.OnClickListener positiveOnClickListener)
-	{
+			final DialogInterface.OnClickListener positiveOnClickListener) {
 		alert(context, message, title, icon, positiveText, positiveOnClickListener, null, null);
 	}
 
@@ -1265,48 +1183,37 @@ public class Notifications
 	 * @throws NullPointerException if the given context and/or positive click listener is <code>null</code>.
 	 */
 	public static void alert(final Context context, final CharSequence message, CharSequence title, final Drawable icon, final CharSequence positiveText,
-			final DialogInterface.OnClickListener positiveOnClickListener, final CharSequence negativeText, DialogInterface.OnClickListener negativeOnClickListener)
-	{
+			final DialogInterface.OnClickListener positiveOnClickListener, final CharSequence negativeText, DialogInterface.OnClickListener negativeOnClickListener) {
 		final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-		if(message != null)
-		{
+		if(message != null) {
 			alertDialogBuilder.setMessage(message);
 		}
-		if(icon != null)
-		{
+		if(icon != null) {
 			alertDialogBuilder.setIcon(icon);
-			if(title == null) //if there is no title, provide an empty title so the icon will appear
-			{
+			if(title == null) { //if there is no title, provide an empty title so the icon will appear
 				title = String.valueOf(NO_BREAK_SPACE_CHAR);
 			}
 		}
-		if(title != null)
-		{
+		if(title != null) {
 			alertDialogBuilder.setTitle(title);
 		}
 		alertDialogBuilder.setIcon(icon); //there will always be an icon, if only because we use a default one
 		alertDialogBuilder.setPositiveButton(positiveText, checkInstance(positiveOnClickListener, "A response handler must be provided for the positive option."));
 		boolean cancelable = true; //default to allowing the dialog to be cancelable
-		if(negativeText != null)
-		{
-			if(negativeOnClickListener != null) //if the caller wants to do something specifically when the negative option is chosen
-			{
+		if(negativeText != null) {
+			if(negativeOnClickListener != null) { //if the caller wants to do something specifically when the negative option is chosen
 				cancelable = false; //don't allow the back button to cancel the dialog, ensuring that the negative on-click listener gets called
-			}
-			else
-			//if no negative on-click listener was provided
-			{
+			} else { //if no negative on-click listener was provided
 				negativeOnClickListener = NOP_ON_CLICK_HANDLER; //use a dummy listener
 			}
 			alertDialogBuilder.setNegativeButton(negativeText, negativeOnClickListener);
 		}
 		final AlertDialog alertDialog = alertDialogBuilder.create();
 		alertDialog.setCancelable(cancelable); //specify whether the dialog can be canceled
-		runOnMainThread(new Runnable()
-		{
+		runOnMainThread(new Runnable() {
+
 			@Override
-			public void run()
-			{
+			public void run() {
 				alertDialog.show();
 			}
 		});

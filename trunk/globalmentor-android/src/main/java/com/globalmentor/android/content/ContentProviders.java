@@ -21,8 +21,7 @@ package com.globalmentor.android.content;
  * 
  * @author Garret Wilson
  */
-public class ContentProviders
-{
+public class ContentProviders {
 
 	/** The URI scheme for accessing content on Android. */
 	public final static String CONTENT_URI_SCHEME = "content";

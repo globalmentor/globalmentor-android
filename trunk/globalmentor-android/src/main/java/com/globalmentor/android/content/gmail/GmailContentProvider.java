@@ -41,8 +41,7 @@ import android.text.TextUtils;
  *      href="https://developers.google.com/gmail/android/com/google/android/gm/contentprovider/GmailContract.Labels.LabelCanonicalNames">GmailContract.Labels
  *      .LabelCanonicalNames/a>
  */
-public class GmailContentProvider
-{
+public class GmailContentProvider {
 
 	/** The Gmail content provider package name. */
 	public final static String PACKAGE_NAME = "com.google.android.gm";
@@ -165,38 +164,28 @@ public class GmailContentProvider
 	 * @param context The application context.
 	 * @return <code>true</code> if the Gmail content provider supports label API queries.
 	 */
-	public static boolean canQueryLabels(final Context context)
-	{
+	public static boolean canQueryLabels(final Context context) {
 		boolean result = false;
-		try
-		{
+		try {
 			final PackageInfo packageInfo = context.getPackageManager().getPackageInfo(PACKAGE_NAME, GET_PROVIDERS | GET_PERMISSIONS);
 			boolean allowRead = false;
-			if(packageInfo.permissions != null) //check for the read permission
-			{
-				for(final PermissionInfo permissionInfo : packageInfo.permissions)
-				{
-					if(READ_PERMISSION.equals(permissionInfo.name) && permissionInfo.protectionLevel < PROTECTION_SIGNATURE)
-					{
+			if(packageInfo.permissions != null) { //check for the read permission
+				for(final PermissionInfo permissionInfo : packageInfo.permissions) {
+					if(READ_PERMISSION.equals(permissionInfo.name) && permissionInfo.protectionLevel < PROTECTION_SIGNATURE) {
 						allowRead = true;
 						break;
 					}
 				}
 			}
-			if(allowRead && packageInfo.providers != null) //check for reading the Gmail content provider
-			{
-				for(int i = 0, len = packageInfo.providers.length; i < len; i++)
-				{
+			if(allowRead && packageInfo.providers != null) { //check for reading the Gmail content provider
+				for(int i = 0, len = packageInfo.providers.length; i < len; i++) {
 					final ProviderInfo provider = packageInfo.providers[i];
-					if(AUTHORITY.equals(provider.authority) && TextUtils.equals(READ_PERMISSION, provider.readPermission))
-					{
+					if(AUTHORITY.equals(provider.authority) && TextUtils.equals(READ_PERMISSION, provider.readPermission)) {
 						result = true;
 					}
 				}
 			}
-		}
-		catch(final NameNotFoundException nameNotFoundException) //if the Gmail content provider was not found
-		{
+		} catch(final NameNotFoundException nameNotFoundException) { //if the Gmail content provider was not found
 			//stay with the default response
 		}
 		return result;
@@ -210,8 +199,7 @@ public class GmailContentProvider
 	 * @param account A valid Google account.
 	 * @return The URI that can be queried to retrieve the the label list.
 	 */
-	public static Uri getLabelsQueryUri(final Account account)
-	{
+	public static Uri getLabelsQueryUri(final Account account) {
 		return BASE_URI.buildUpon().appendEncodedPath(account.name + PATH_SEPARATOR + LABELS_PATH_SEGMENT).build();
 	}
 
@@ -221,19 +209,14 @@ public class GmailContentProvider
 	 * @param labelCanonicalName The label canonical name to find.
 	 * @throws IllegalArgumentException if no row could be found with the given label canonical name.
 	 */
-	public static void moveLabelCursorToNextCanonicalName(final Cursor labelCursor, final String labelCanonicalName)
-	{
+	public static void moveLabelCursorToNextCanonicalName(final Cursor labelCursor, final String labelCanonicalName) {
 		final int canonicalNameIndex;
-		try
-		{
+		try {
 			canonicalNameIndex = labelCursor.getColumnIndexOrThrow(LABEL_COLUMN_CANONICAL_NAME);
-		}
-		catch(final IllegalArgumentException illegalArgumentException)
-		{
+		} catch(final IllegalArgumentException illegalArgumentException) {
 			throw new IllegalStateException("Missing " + LABEL_COLUMN_CANONICAL_NAME + " label column.");
 		}
-		while(labelCursor.moveToNext())
-		{
+		while(labelCursor.moveToNext()) {
 			//Log.d(GmailContentProvider.class.getName(), "label: " + labelCursor.getString(canonicalNameIndex));
 			/*As of 2014-06-01, the following labels are being returned:
 			* ^sq_ig_i_personal
@@ -248,8 +231,7 @@ public class GmailContentProvider
 			* ^s
 			* ^k 
 			 */
-			if(labelCanonicalName.equals(labelCursor.getString(canonicalNameIndex)))
-			{
+			if(labelCanonicalName.equals(labelCursor.getString(canonicalNameIndex))) {
 				return;
 			}
 		}

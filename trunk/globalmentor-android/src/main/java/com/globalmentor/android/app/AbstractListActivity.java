@@ -29,8 +29,7 @@ import android.widget.*;
  * 
  * @param <I> The type of item in the list.
  */
-public abstract class AbstractListActivity<I> extends BaseActivity
-{
+public abstract class AbstractListActivity<I> extends BaseActivity {
 
 	private ListView listView;
 
@@ -38,24 +37,21 @@ public abstract class AbstractListActivity<I> extends BaseActivity
 	private ListAdapter listAdapter;
 
 	/** @return The list adapter being used. */
-	protected ListAdapter getListAdapter()
-	{
+	protected ListAdapter getListAdapter() {
 		return listAdapter;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_abstractlistactivity);
 		listView = (ListView)findViewById(R.id.app_abstractlistactivity_list);
 		listAdapter = createListAdapter(); //create the adapter
 		listView.setAdapter(listAdapter); //set the adapter in the list view
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() //call onApplicationClick() with the application information
-				{
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() { //call onApplicationClick() with the application information
+
 					@Override
-					public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
-					{
+					public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 						AbstractListActivity.this.onItemClick(position, id, getItem(position, id)); //get the item and delegate to the other onItemClick() method
 					}
 				});
@@ -77,8 +73,7 @@ public abstract class AbstractListActivity<I> extends BaseActivity
 	 * @throws IllegalArgumentException if the given position and/or ID is invalid.
 	 */
 	@SuppressWarnings("unchecked")
-	protected I getItem(final int position, final long id)
-	{
+	protected I getItem(final int position, final long id) {
 		return (I)getListAdapter().getItem(position);
 	}
 
@@ -93,8 +88,7 @@ public abstract class AbstractListActivity<I> extends BaseActivity
 	 * @param id The ID of the item that was clicked.
 	 * @param item The item that was clicked.
 	 */
-	public void onItemClick(final int position, final long id, final I item)
-	{
+	public void onItemClick(final int position, final long id, final I item) {
 	}
 
 }

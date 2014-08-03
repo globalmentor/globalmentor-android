@@ -27,15 +27,13 @@ import android.content.Context;
  * 
  * @param <I> The type of item in the list.
  */
-public abstract class AbstractListListAdapter<I> extends AbstractListAdapter<I>
-{
+public abstract class AbstractListListAdapter<I> extends AbstractListAdapter<I> {
 
 	/** The backing list. */
 	private final List<I> list;
 
 	/** @return The backing list. */
-	protected List<I> getList()
-	{
+	protected List<I> getList() {
 		return list;
 	}
 
@@ -45,44 +43,38 @@ public abstract class AbstractListListAdapter<I> extends AbstractListAdapter<I>
 	 * @param list The list to adapt.
 	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
 	 */
-	public AbstractListListAdapter(final Context context, final List<I> list)
-	{
+	public AbstractListListAdapter(final Context context, final List<I> list) {
 		super(context);
 		this.list = new ArrayList<I>(list);
 	}
 
 	/** {@inheritDoc} This version delegates to {@link List#size()}. */
 	@Override
-	public int getCount()
-	{
+	public int getCount() {
 		return getList().size();
 	}
 
 	/** {@inheritDoc} This version delegates to {@link List#isEmpty()}. */
 	@Override
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return getList().isEmpty();
 	}
 
 	/** {@inheritDoc} This version delegates to {@link List#get(int)}. */
 	@Override
-	public I getItem(final int position)
-	{
+	public I getItem(final int position) {
 		return getList().get(position);
 	}
 
 	/** {@inheritDoc} This implementation returns the position of the item. */
 	@Override
-	public long getItemId(final int position)
-	{
+	public long getItemId(final int position) {
 		return position;
 	}
 
 	/** {@inheritDoc} This version returns <code>false</code>, because this implementation uses list position for IDs. */
 	@Override
-	public boolean hasStableIds()
-	{
+	public boolean hasStableIds() {
 		return false;
 	}
 }

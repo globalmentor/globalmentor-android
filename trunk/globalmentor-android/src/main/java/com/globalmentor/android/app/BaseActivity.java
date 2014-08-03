@@ -24,15 +24,13 @@ import android.content.pm.ApplicationInfo;
  * 
  * @author Garret Wilson
  */
-public class BaseActivity extends Activity
-{
+public class BaseActivity extends Activity {
 
 	/**
 	 * @return Whether this application is in debug mode.
 	 * @see ApplicationInfo#FLAG_DEBUGGABLE
 	 */
-	public boolean isDebug()
-	{
+	public boolean isDebug() {
 		return Applications.isDebug(this);
 	}
 
@@ -43,8 +41,7 @@ public class BaseActivity extends Activity
 	 * </p>
 	 * @return A log tag appropriate for this activity.
 	 */
-	public String getLogTag()
-	{
+	public String getLogTag() {
 		return getClass().getSimpleName();
 	}
 

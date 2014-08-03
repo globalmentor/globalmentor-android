@@ -29,16 +29,14 @@ import android.os.Environment;
  * 
  * @author Garret Wilson
  */
-public class ExternalStorage
-{
+public class ExternalStorage {
 
 	/**
 	 * @return <code>true</code> if the external storage is mounted with read/write access.
 	 * @see Environment#getExternalStorageState()
 	 * @see Environment#MEDIA_MOUNTED
 	 */
-	public static boolean isWritable()
-	{
+	public static boolean isWritable() {
 		return MEDIA_MOUNTED.equals(getExternalStorageState());
 	}
 
@@ -47,8 +45,7 @@ public class ExternalStorage
 	 * @see Environment#getExternalStorageState()
 	 * @see Environment#MEDIA_MOUNTED_READ_ONLY
 	 */
-	public static boolean isReadOnly()
-	{
+	public static boolean isReadOnly() {
 		return MEDIA_MOUNTED.equals(getExternalStorageState());
 	}
 
@@ -58,8 +55,7 @@ public class ExternalStorage
 	 * @see Environment#MEDIA_MOUNTED
 	 * @see Environment#MEDIA_MOUNTED_READ_ONLY
 	 */
-	public static boolean isReadable()
-	{
+	public static boolean isReadable() {
 		return isWritable() || isReadable();
 	}
 
@@ -71,11 +67,9 @@ public class ExternalStorage
 	 * @return The indicated subdirectory in the cache directory for the given context.
 	 * @throws NullPointerException if the given context or subdirectory is <code>null</code>.
 	 */
-	public static File getExternalCacheDirectory(final Context context, final String subdirectory)
-	{
+	public static File getExternalCacheDirectory(final Context context, final String subdirectory) {
 		final File externalCacheSubdirectory = new File(context.getExternalCacheDir(), checkInstance(subdirectory)); //create a file for the subdirectory
-		if(!externalCacheSubdirectory.isDirectory() && isWritable()) //if the subdirectory doesn't exist and the external storage is writable
-		{
+		if(!externalCacheSubdirectory.isDirectory() && isWritable()) { //if the subdirectory doesn't exist and the external storage is writable
 			externalCacheSubdirectory.mkdirs(); //try to create the required subdirectory
 		}
 		return externalCacheSubdirectory;

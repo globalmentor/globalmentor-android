@@ -40,25 +40,20 @@ import android.widget.*;
  * 
  * @author Garret Wilson
  */
-public class AboutListActivity extends AbstractListActivity<ApplicationInfo>
-{
+public class AboutListActivity extends AbstractListActivity<ApplicationInfo> {
 
 	@Override
-	protected ListAdapter createListAdapter()
-	{
+	protected ListAdapter createListAdapter() {
 		final Resources resources = getResources();
 		final List<NameValuePair<CharSequence, Object>> properties = new ArrayList<NameValuePair<CharSequence, Object>>();
 		final PackageManager packageManager = getPackageManager();
 		final String packageName = getPackageName(); //get the name of the application package
 		final ApplicationInfo applicationInfo;
 		final PackageInfo packageInfo;
-		try
-		{
+		try {
 			applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA); //get information about the application itself from its package
 			packageInfo = packageManager.getPackageInfo(packageName, 0); //get information about the application package
-		}
-		catch(final NameNotFoundException nameNotFoundException)
-		{
+		} catch(final NameNotFoundException nameNotFoundException) {
 			throw unexpected("Could not find information for application package " + packageName, nameNotFoundException);
 		}
 		//application name and version

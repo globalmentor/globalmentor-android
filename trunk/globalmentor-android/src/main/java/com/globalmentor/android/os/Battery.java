@@ -24,19 +24,16 @@ import android.content.*;
  * 
  * @author Garret Wilson
  */
-public class Battery
-{
+public class Battery {
 
 	/**
 	 * Determines whether the devices is plugged into a power source (i.e. is not running solely on battery).
 	 * @param context The current context.
 	 * @return <code>true</code> if the device is connected to a power source.
 	 */
-	public static boolean isPlugged(final Context context)
-	{
+	public static boolean isPlugged(final Context context) {
 		final Intent batteryChangedIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED)); //don't actually register a receiver; just get the last sticky intent broadcast
-		if(batteryChangedIntent == null) //we always expect to get an intent, but no need to crash the application is Android screws up
-		{
+		if(batteryChangedIntent == null) { //we always expect to get an intent, but no need to crash the application is Android screws up
 			return false;
 		}
 		return batteryChangedIntent.getExtras().getInt(EXTRA_PLUGGED, 0) != 0; //zero means battery; other values are for other types of power sources

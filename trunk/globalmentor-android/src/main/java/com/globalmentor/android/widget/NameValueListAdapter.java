@@ -32,23 +32,21 @@ import android.content.Context;
  * 
  * @author Garret Wilson
  */
-public class NameValueListAdapter extends AbstractNameDescriptionListAdapter<NameValuePair<CharSequence, Object>>
-{
+public class NameValueListAdapter extends AbstractNameDescriptionListAdapter<NameValuePair<CharSequence, Object>> {
+
 	/**
 	 * Context and list constructor. A defensive copy is made of the list.
 	 * @param context The current context.
 	 * @param list The list to adapt.
 	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
 	 */
-	public NameValueListAdapter(final Context context, final List<NameValuePair<CharSequence, Object>> list)
-	{
+	public NameValueListAdapter(final Context context, final List<NameValuePair<CharSequence, Object>> list) {
 		super(context, list);
 	}
 
 	/** {@inheritDoc} This implementation delegates to {@link NameValuePair#getName()}. */
 	@Override
-	protected CharSequence getItemName(final int position, final long id, final NameValuePair<CharSequence, Object> item)
-	{
+	protected CharSequence getItemName(final int position, final long id, final NameValuePair<CharSequence, Object> item) {
 		return item.getName();
 	}
 
@@ -56,8 +54,7 @@ public class NameValueListAdapter extends AbstractNameDescriptionListAdapter<Nam
 	 * {@inheritDoc} This implementation delegates to {@link NameValuePair#getValue()}. If the value implements {@link Labeled}, its label will be returned.
 	 */
 	@Override
-	protected CharSequence getItemDescription(final int position, final long id, final NameValuePair<CharSequence, Object> item)
-	{
+	protected CharSequence getItemDescription(final int position, final long id, final NameValuePair<CharSequence, Object> item) {
 		final Object value = item.getValue();
 		return value != null ? Labels.getLabel(value) : null; //return an appropriate label for the object
 

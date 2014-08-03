@@ -30,8 +30,8 @@ import android.net.Uri;
  * 
  * @see DownloadManager
  */
-public class DownloadInfo
-{
+public class DownloadInfo {
+
 	/** An identifier for the download, unique across the system. */
 	public final long id;
 
@@ -60,8 +60,7 @@ public class DownloadInfo
 	 * @param reason More detail on the status of the download.
 	 * @throws NullPointerException if one of the given references is <code>null</code>.
 	 */
-	protected DownloadInfo(final long id, final Uri uri, final String title, final String description, final int status, final String reason)
-	{
+	protected DownloadInfo(final long id, final Uri uri, final String title, final String description, final int status, final String reason) {
 		this.id = checkInstance(id);
 		this.uri = checkInstance(uri);
 		this.title = checkInstance(title);
@@ -75,8 +74,7 @@ public class DownloadInfo
 	 * @param cursor The cursor from which the download information should be retrieved.
 	 * @return The retrieved download information.
 	 */
-	public static DownloadInfo getInfo(final Cursor cursor)
-	{
+	public static DownloadInfo getInfo(final Cursor cursor) {
 		return new DownloadInfo(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)), Uri.parse(cursor.getString(cursor.getColumnIndex(COLUMN_URI))),
 				cursor.getString(cursor.getColumnIndex(COLUMN_TITLE)), cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION)), cursor.getInt(cursor
 						.getColumnIndex(DownloadManager.COLUMN_STATUS)), cursor.getString(cursor.getColumnIndex(COLUMN_REASON)));
@@ -89,19 +87,14 @@ public class DownloadInfo
 	 * @param downloadID The ID of the download to query
 	 * @return Information on the identified download, or <code>null</code> if no info on the identified download could be found.
 	 */
-	public static DownloadInfo getInfo(final DownloadManager downloadManager, final long downloadID)
-	{
+	public static DownloadInfo getInfo(final DownloadManager downloadManager, final long downloadID) {
 		final Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(downloadID));
-		try
-		{
-			if(!cursor.moveToFirst())
-			{
+		try {
+			if(!cursor.moveToFirst()) {
 				return null; //we can't find the download
 			}
 			return getInfo(cursor); //get information from the cursor and return the resulting info
-		}
-		finally
-		{
+		} finally {
 			cursor.close();
 		}
 	}

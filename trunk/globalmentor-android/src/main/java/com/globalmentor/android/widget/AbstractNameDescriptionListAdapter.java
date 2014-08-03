@@ -36,15 +36,13 @@ import android.widget.*;
  * 
  * @param <I> The type of item in the list.
  */
-public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractListListAdapter<I>
-{
+public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractListListAdapter<I> {
 
 	/** Whether an icon should be present with the items. */
 	private boolean iconPresent = true;
 
 	/** @return Whether an icon should be present with the items. */
-	public boolean isIconPresent()
-	{
+	public boolean isIconPresent() {
 		return iconPresent;
 	}
 
@@ -52,8 +50,7 @@ public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractList
 	 * Whether an icon should be present with the items.
 	 * @param iconPresent Whether an icon should be present.
 	 */
-	public void setIconPresent(final boolean iconPresent)
-	{
+	public void setIconPresent(final boolean iconPresent) {
 		this.iconPresent = iconPresent;
 	}
 
@@ -63,20 +60,17 @@ public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractList
 	 * @param list The list to adapt.
 	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
 	 */
-	public AbstractNameDescriptionListAdapter(final Context context, final List<I> list)
-	{
+	public AbstractNameDescriptionListAdapter(final Context context, final List<I> list) {
 		super(context, list);
 	}
 
 	@Override
-	protected View createView(int position, long id, I item, ViewGroup parent)
-	{
+	protected View createView(int position, long id, I item, ViewGroup parent) {
 		return LayoutInflater.from(getContext()).inflate(R.layout.app_abstractnamedescriptionlistadapter_item, null);
 	}
 
 	@Override
-	protected void initializeView(final View view, int position, long id, I item, ViewGroup parent)
-	{
+	protected void initializeView(final View view, int position, long id, I item, ViewGroup parent) {
 		final ImageView iconImageView = (ImageView)view.findViewById(R.id.app_abstractnamedescriptionlistadapter_item_icon);
 		iconImageView.setVisibility(isIconPresent() ? ImageView.VISIBLE : ImageView.GONE); //set the visibility of the icon
 		iconImageView.setImageDrawable(getItemIcon(position, id, item));
@@ -96,8 +90,7 @@ public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractList
 	 * @param item The item in the list for which a name should be created.
 	 * @return The text for the name of the item, or <code>null</code> if there is no name for the item.
 	 */
-	protected CharSequence getItemName(final int position, final long id, final I item)
-	{
+	protected CharSequence getItemName(final int position, final long id, final I item) {
 		return null;
 	}
 
@@ -111,8 +104,7 @@ public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractList
 	 * @param item The item in the list for which a description should be created.
 	 * @return The text for the description of the item, or <code>null</code> if there is no icon for the item.
 	 */
-	protected CharSequence getItemDescription(final int position, final long id, final I item)
-	{
+	protected CharSequence getItemDescription(final int position, final long id, final I item) {
 		return null;
 	}
 
@@ -126,8 +118,7 @@ public abstract class AbstractNameDescriptionListAdapter<I> extends AbstractList
 	 * @param item The item in the list for which an icon should be created.
 	 * @return The drawable for the icon of the item, or <code>null</code> if there is no icon for the item.
 	 */
-	protected Drawable getItemIcon(final int position, final long id, final I item)
-	{
+	protected Drawable getItemIcon(final int position, final long id, final I item) {
 		return null;
 	}
 

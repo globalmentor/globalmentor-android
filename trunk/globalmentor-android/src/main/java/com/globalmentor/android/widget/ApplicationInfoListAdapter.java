@@ -38,37 +38,33 @@ import android.graphics.drawable.Drawable;
  * 
  * @see <a href="http://xjaphx.wordpress.com/2011/06/12/create-application-launcher-as-a-list/">Create Application Launcher as a list</a>
  */
-public class ApplicationInfoListAdapter extends AbstractNameDescriptionListAdapter<ApplicationInfo>
-{
+public class ApplicationInfoListAdapter extends AbstractNameDescriptionListAdapter<ApplicationInfo> {
+
 	/**
 	 * Context and list constructor. A defensive copy is made of the list.
 	 * @param context The current context.
 	 * @param list The list to adapt.
 	 * @throws NullPointerException if the given context and/or list is <code>null</code>.
 	 */
-	public ApplicationInfoListAdapter(final Context context, final List<ApplicationInfo> list)
-	{
+	public ApplicationInfoListAdapter(final Context context, final List<ApplicationInfo> list) {
 		super(context, list);
 	}
 
 	/** {@inheritDoc} This implementation delegates to {@link ApplicationInfo#loadLabel(PackageManager)}. */
 	@Override
-	protected CharSequence getItemName(final int position, final long id, final ApplicationInfo item)
-	{
+	protected CharSequence getItemName(final int position, final long id, final ApplicationInfo item) {
 		return item.loadLabel(getContext().getPackageManager());
 	}
 
 	/** {@inheritDoc} This implementation delegates to {@link ApplicationInfo#loadDescription(PackageManager)}. */
 	@Override
-	protected CharSequence getItemDescription(final int position, final long id, final ApplicationInfo item)
-	{
+	protected CharSequence getItemDescription(final int position, final long id, final ApplicationInfo item) {
 		return item.loadDescription(getContext().getPackageManager());
 	}
 
 	/** {@inheritDoc} This implementation delegates to {@link ApplicationInfo#loadIcon(PackageManager))}. */
 	@Override
-	protected Drawable getItemIcon(final int position, final long id, final ApplicationInfo item)
-	{
+	protected Drawable getItemIcon(final int position, final long id, final ApplicationInfo item) {
 		return item.loadIcon(getContext().getPackageManager());
 	}
 }
