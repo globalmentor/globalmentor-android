@@ -47,7 +47,7 @@ import android.widget.Toast;
 public class Notifications {
 
 	/** A click handler that does nothing. */
-	private final static DialogInterface.OnClickListener NOP_ON_CLICK_HANDLER = new DialogInterface.OnClickListener() {
+	private static final DialogInterface.OnClickListener NOP_ON_CLICK_HANDLER = new DialogInterface.OnClickListener() {
 
 		@Override
 		public void onClick(final DialogInterface dialog, final int which) {
@@ -58,7 +58,7 @@ public class Notifications {
 	 * The atomic integer representing the next ID to use for notifications. Because each application gets a separate instance of the Dalvik VM, maintaining the
 	 * next notification ID statically does not deplete the available IDs more rapidly than a per-application record.
 	 */
-	private final static AtomicInteger nextNotificationID = new AtomicInteger();
+	private static final AtomicInteger nextNotificationID = new AtomicInteger();
 
 	/**
 	 * Generates a new ID for notifications.

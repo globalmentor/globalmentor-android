@@ -44,10 +44,10 @@ import android.text.TextUtils;
 public class GmailContentProvider {
 
 	/** The Gmail content provider package name. */
-	public final static String PACKAGE_NAME = "com.google.android.gm";
+	public static final String PACKAGE_NAME = "com.google.android.gm";
 
 	/** The class name of the Gmail conversation list activity. */
-	public final static String CONVERSATION_LIST_ACTIVITY_CLASS_NAME = PACKAGE_NAME + ".ConversationListActivity";
+	public static final String CONVERSATION_LIST_ACTIVITY_CLASS_NAME = PACKAGE_NAME + ".ConversationListActivity";
 
 	/** Permission required to access the Gmail content provider. */
 	public static final String READ_PERMISSION = "com.google.android.gm.permission.READ_CONTENT_PROVIDER";
@@ -56,13 +56,13 @@ public class GmailContentProvider {
 	public static final String AUTHORITY = "com.google.android.gm";
 
 	/** The path segment for labels. */
-	public final static String LABELS_PATH_SEGMENT = "labels";
+	public static final String LABELS_PATH_SEGMENT = "labels";
 
 	/** The path segment for a label. */
 	static final String LABEL_PARAM = "label";
 
 	/** The base URI for Gmail. */
-	public final static Uri BASE_URI = Uri.parse(CONTENT_URI_SCHEME + SCHEME_SEPARATOR + AUTHORITY_PREFIX + AUTHORITY + PATH_SEPARATOR);
+	public static final Uri BASE_URI = Uri.parse(CONTENT_URI_SCHEME + SCHEME_SEPARATOR + AUTHORITY_PREFIX + AUTHORITY + PATH_SEPARATOR);
 
 	//label canonical names
 

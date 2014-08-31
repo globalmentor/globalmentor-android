@@ -45,7 +45,7 @@ public class AccountAuthManager {
 	 * </ol>
 	 * 
 	 */
-	public final static int DEFAULT_AUTHENTICATE_RETRY_COUNT = 2;
+	public static final int DEFAULT_AUTHENTICATE_RETRY_COUNT = 2;
 
 	//TODO fix for dialogs	private static final int REQUEST_AUTHENTICATE = 0;
 

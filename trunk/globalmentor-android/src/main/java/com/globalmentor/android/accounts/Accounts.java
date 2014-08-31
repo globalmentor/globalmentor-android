@@ -32,10 +32,10 @@ import android.content.Context;
 public class Accounts {
 
 	/** The account type for listing Google accounts. */
-	public final static String GOOGLE_ACCOUNT_TYPE = "com.google";
+	public static final String GOOGLE_ACCOUNT_TYPE = "com.google";
 
 	/** The feature of an account that supports mail. */
-	public final static String MAIL_FEATURE = "service_mail";
+	public static final String MAIL_FEATURE = "service_mail";
 
 	/**
 	 * Returns a list of all Google accounts.

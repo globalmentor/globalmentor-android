@@ -26,7 +26,7 @@ import android.os.*;
 public class Threads {
 
 	/** A handler associated with the main thread. */
-	public final static Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
+	public static final Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
 
 	/** @return Whether the currently executing thread is the UI thread. */
 	public static boolean isMainThread() {

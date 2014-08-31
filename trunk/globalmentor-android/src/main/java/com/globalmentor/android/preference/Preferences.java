@@ -34,7 +34,7 @@ import android.preference.PreferenceManager;
 public class Preferences {
 
 	/** The pattern for splitting a string into lines, accepting either <code>LF</code> or <code>CR+LF</code>. */
-	public final static Pattern LINE_SPLIT_PATTERN = Pattern.compile("\\r?\\n");
+	public static final Pattern LINE_SPLIT_PATTERN = Pattern.compile("\\r?\\n");
 
 	/**
 	 * Set the default preference values from the indicated preferences resource, but only if they haven't yet been set before.
