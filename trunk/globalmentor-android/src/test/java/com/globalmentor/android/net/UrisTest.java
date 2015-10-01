@@ -22,7 +22,6 @@ import java.net.URI;
 import android.net.Uri;
 
 import com.globalmentor.io.Files;
-import com.globalmentor.test.AbstractTest;
 
 //import static org.junit.Assert.*;
 
@@ -33,7 +32,7 @@ import com.globalmentor.test.AbstractTest;
  * 
  * @author Garret Wilson
  */
-public class UrisTest extends AbstractTest {
+public class UrisTest {
 
 	private File tempFile;
 
