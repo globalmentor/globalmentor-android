@@ -25,13 +25,14 @@ import com.globalmentor.io.Files;
 
 //import static org.junit.Assert.*;
 
-//import org.junit.*;
+import org.junit.*;
 
 /**
  * Tests of the {@link Uris} utility class.
  * 
  * @author Garret Wilson
  */
+@Ignore
 public class UrisTest {
 
 	private File tempFile;
